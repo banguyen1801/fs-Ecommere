@@ -1,7 +1,6 @@
-require('dotenv').config();
+const config = require('./config');
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 5000;
 
 // Import Router
 const authRoute = require('./routes/auth.js');
@@ -17,4 +16,8 @@ app.use(express.json());
 app.use('/api/user', authRoute);
 app.use('/api/posts', postRoute);
 
-app.listen(port, () => console.log(`Server listening on port ${port}`));
+app.listen(config.port, () =>
+  console.log(`################################################
+🛡️  Server listening on port: ${config.port} 🛡️
+################################################`)
+);

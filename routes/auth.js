@@ -1,5 +1,7 @@
+const config = require('../config');
 const router = require('express').Router();
 const User = require('../models/User.js');
+const jwt = require('jsonwebtoken');
 
 const {
   registerValidation,
@@ -8,7 +10,6 @@ const {
 const {
   generateAccessToken,
   generateRefreshToken,
-  generateNewAccessToken,
 } = require('../scripts/tokenGenerator.js');
 const { hashPassword, validatePassword } = require('../scripts/hashHandler.js');
 
@@ -55,13 +56,17 @@ router.post('/login', async (req, res) => {
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
   refreshTokens.push(refreshToken);
-  res.json({ accessToken: accessToken, refreshToken: refreshToken });
+  res.send({ accessToken: accessToken, refreshToken: refreshToken });
 });
 
-router.post('/token', (req, res) => {
+router.post('/token', async (req, res) => {
   const refreshToken = req.body.token;
   if (!refreshToken) return res.status(401);
   if (!refreshTokens.includes(refreshToken)) return res.status(403);
-  generateNewAccessToken(refreshToken);
+  jwt.verify(refreshToken, config.refreshTokenSecret, (err, user) => {
+    if (err) return res.status(403);
+    const accessToken = generateAccessToken(user);
+    res.json({ newAccessToken: accessToken, refreshToken: refreshToken });
+  });
 });
 module.exports = router;
