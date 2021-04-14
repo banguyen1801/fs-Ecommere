@@ -11,7 +11,6 @@ const {
   generateNewAccessToken,
 } = require('../scripts/tokenGenerator.js');
 const { hashPassword, validatePassword } = require('../scripts/hashHandler.js');
-const { findUserByEmail } = require('../scripts/userAction.js');
 
 // Register
 router.post('/register', async (req, res) => {
@@ -20,20 +19,22 @@ router.post('/register', async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   // Check uniqueness of user
-  const emailExist = findUserByEmail(req.body.email);
+  const emailExist = await User.findOne({ email: req.body.email });
   if (emailExist) return res.status(400).send('Email already exist');
 
   // Hash password with bcryptjs
-  const hashedPassword = hashPassword(req.body.password);
+  const hashedPassword = await hashPassword(req.body.password);
 
   // Create a new User
   const user = new User({
     name: req.body.name,
     email: req.body.email,
+    role: req.body.role,
     password: hashedPassword,
   });
   try {
-    res.send({ user: user._id });
+    const savedUser = await user.save();
+    res.send(savedUser);
   } catch (err) {
     res.status(400).send(err);
   }
@@ -45,7 +46,7 @@ router.post('/login', async (req, res) => {
   const { error } = loginValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const user = findUserByEmail(req.body.email);
+  const user = await User.findOne({ email: req.body.email });
   if (!user) return res.status(400).send('Email is not found');
 
   const validPass = validatePassword(req.body.password, user.password);
