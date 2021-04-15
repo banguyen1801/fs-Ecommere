@@ -20,9 +20,9 @@ const userSchema = new mongoose.Schema({
     max: 1024,
   },
   role: {
-    type: String,
-    min: 3,
-    default: 'customer',
+    type: [String],
+    min: 1,
+    default: ['customer'],
   },
   date: {
     type: Date,

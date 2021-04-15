@@ -5,7 +5,7 @@ const registerValidation = (data) => {
   const schema = Joi.object({
     name: Joi.string().min(6).required(),
     email: Joi.string().min(6).email().required(),
-    role: Joi.string().min(3),
+    role: Joi.array().min(1),
     password: Joi.string().min(6).required(),
   });
 

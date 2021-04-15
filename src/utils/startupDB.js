@@ -1,6 +1,7 @@
 // connect to database
+const config = require('../config');
 const mongoose = require('mongoose');
-mongoose.connect(process.env.DATABASE_CLOUD_URL, {
+mongoose.connect(config.databaseURL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });

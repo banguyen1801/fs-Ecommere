@@ -1,16 +1,18 @@
 const config = require('./config');
+const compression = require('compression');
 const express = require('express');
 const app = express();
 
-// Import Router
-const authRoute = require('./routes/auth.js');
-const postRoute = require('./routes/posts.js');
+// Import Routes
+const authRoute = require('./routes/auth');
+const postRoute = require('./routes/posts');
 
 // Scripts
-require('./scripts/startupDB.js');
+require('./utils/startupDB');
 
 // Middleware
 app.use(express.json());
+app.use(compression());
 
 // Route Middleware
 app.use('/api/user', authRoute);
