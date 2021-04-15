@@ -1,17 +1,17 @@
 const config = require('../config');
 const router = require('express').Router();
-const User = require('../models/User.js');
+const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
 const {
   registerValidation,
   loginValidation,
-} = require('../scripts/schemaValidation.js');
+} = require('../utils/schemaValidation');
 const {
   generateAccessToken,
   generateRefreshToken,
-} = require('../scripts/tokenGenerator.js');
-const { hashPassword, validatePassword } = require('../scripts/hashHandler.js');
+} = require('../utils/tokenGenerator');
+const { hashPassword, validatePassword } = require('../utils/hashHandler');
 
 // Register
 router.post('/register', async (req, res) => {
