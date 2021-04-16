@@ -7,16 +7,16 @@ const app = express();
 const authRoute = require('./routes/auth');
 const postRoute = require('./routes/posts');
 
-// Scripts
-require('./utils/startupDB');
+// utils
+require('./scripts/startupDB');
 
 // Middleware
 app.use(express.json());
 app.use(compression());
 
 // Route Middleware
-app.use('/api/user', authRoute);
-app.use('/api/posts', postRoute);
+app.use('/', authRoute);
+app.use('/', postRoute);
 
 app.listen(config.port, () =>
   console.log(`################################################
