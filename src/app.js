@@ -1,6 +1,6 @@
 const config = require('./config');
-const compression = require('compression');
 const express = require('express');
+const genericErrorHandler = require('./errors/GenericErrorHandler');
 const app = express();
 
 // Import Routes
@@ -11,8 +11,11 @@ const postRoute = require('./routes/posts');
 require('./scripts/startupDB');
 
 // Middleware
+// compression can save a lot of data and improve speed, need to implement and test properly
+// const compression = require('compression');
+// app.use(compression());
 app.use(express.json());
-app.use(compression());
+app.use(genericErrorHandler);
 
 // Route Middleware
 app.use('/', authRoute);

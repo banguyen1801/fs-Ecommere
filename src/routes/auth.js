@@ -15,7 +15,7 @@ router.post('/register', async (req, res) => {
 
 // Login logic
 router.post('/login', async (req, res) => {
-  const { accessToken, refreshToken } = await loginUserService(req, res);
+  const [accessToken, refreshToken] = await loginUserService(req, res);
   res.json({ accessToken: accessToken, refreshToken: refreshToken });
 });
 

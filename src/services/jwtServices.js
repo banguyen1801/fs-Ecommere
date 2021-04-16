@@ -15,13 +15,11 @@ function generateRefreshToken(user) {
 
 //take a refreshtoken and return verified user which only has info of _id
 function verifyRefreshToken(token) {
-  if (!token) return res.status(401);
-
   //TODO: refreshTokens needed to be stored somewhere so we can retrieve it
   //to check if the refreshToken that user have is the same as the one we store in our database
-  if (!refreshTokens.includes(refreshToken)) return res.status(403);
+  //   if (!refreshTokens.includes(token)) return res.status(403);
   jwt.verify(refreshToken, config.refreshTokenSecret, (err, user) => {
-    if (err) return res.status(403);
+    if (err) throw new Error('RefreshToken not Valid');
     if (!err) return generateAccessToken(user);
   });
   return;
