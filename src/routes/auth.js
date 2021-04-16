@@ -20,7 +20,7 @@ router.post('/login', async (req, res) => {
 });
 
 // this route is used for verifying requestToken and gain user a new JWT accessToken
-// TODO:
+// TODO: need to implement proper code to check refreshToken and sign new accessToken to user
 router.post('/token', async (req, res) => {
   const newAccessToken = verifyRefreshToken(req.body);
   res.json({ newAccessToken: newAccessToken });
