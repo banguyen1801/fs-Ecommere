@@ -26,6 +26,7 @@ const productCreationValidation = (data) => {
     name: Joi.string().min(3).required(),
     categories: Joi.array().min(1).required(),
   });
+  return schema.validate(data);
 };
 
 module.exports = {

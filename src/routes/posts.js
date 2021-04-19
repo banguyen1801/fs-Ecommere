@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const verify = require('../scripts/verifyToken');
+const verify = require('../services/verifyToken');
 const User = require('../models/User');
 
 // a private route with middleware that check for jwt token
