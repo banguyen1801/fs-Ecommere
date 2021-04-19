@@ -1,4 +1,4 @@
-const bcrypt = require('bcryptjs');
+import bcrypt from 'bcryptjs';
 
 async function hashPassword(rawPassword) {
   const salt = await bcrypt.genSalt(10);
@@ -10,7 +10,4 @@ async function validatePassword(rawPassword, hashedPassword) {
   return bcrypt.compare(rawPassword, hashedPassword);
 }
 
-module.exports = {
-  hashPassword,
-  validatePassword,
-};
+export { hashPassword, validatePassword };

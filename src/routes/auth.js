@@ -1,11 +1,12 @@
-const router = require('express').Router();
+import express from 'express';
+const router = express.Router();
+import { verifyRefreshToken } from '../services/jwtServices.js';
 
-const { verifyRefreshToken } = require('../services/jwtServices');
-
-const {
+import {
   registerUserService,
   loginUserService,
-} = require('../services/authServices');
+  deleteAllService,
+} from '../services/authServices.js';
 
 // Register
 router.post('/register', async (req, res) => {
@@ -19,10 +20,14 @@ router.post('/login', async (req, res) => {
   res.json({ accessToken: accessToken, refreshToken: refreshToken });
 });
 
+router.post('/deleteAll', async (req, res) => {
+  await deleteAllService();
+});
+
 // this route is used for verifying requestToken and gain user a new JWT accessToken
 // TODO: need to implement proper code to check refreshToken and sign new accessToken to user
 router.post('/token', async (req, res) => {
   const newAccessToken = verifyRefreshToken(req.body);
   res.json({ newAccessToken: newAccessToken });
 });
-module.exports = router;
+export default router;

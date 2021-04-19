@@ -6,7 +6,4 @@ const internal = (res, msg) => {
   res.status(500).json(msg);
 };
 
-module.exports = {
-  badRequest,
-  internal,
-};
+export { badRequest, internal };

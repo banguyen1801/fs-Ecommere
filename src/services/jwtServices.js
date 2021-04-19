@@ -1,5 +1,5 @@
-const config = require('../config');
-const jwt = require('jsonwebtoken');
+import config from '../config/index.js';
+import jwt from 'jsonwebtoken';
 
 //take a user return a new JWT Token signed by user _id
 function generateAccessToken(user) {
@@ -25,8 +25,4 @@ function verifyRefreshToken(token) {
   return;
 }
 
-module.exports = {
-  generateAccessToken,
-  generateRefreshToken,
-  verifyRefreshToken,
-};
+export { generateAccessToken, generateRefreshToken, verifyRefreshToken };

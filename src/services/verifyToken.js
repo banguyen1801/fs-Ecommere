@@ -1,8 +1,8 @@
-const config = require('../config');
-const jwt = require('jsonwebtoken');
-const { badRequest } = require('../errors/ApiError');
+import config from '../config/index.js';
+import jwt from 'jsonwebtoken';
+import { badRequest } from '../errors/ApiError.js';
 
-module.exports = function (req, res, next) {
+export function verify(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
   if (token == null) return badRequest(res, 'Access Denied');
@@ -11,4 +11,4 @@ module.exports = function (req, res, next) {
     req.user = user;
     next();
   });
-};
+}

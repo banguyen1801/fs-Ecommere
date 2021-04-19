@@ -1,28 +1,23 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+const Schema = mongoose.Schema;
 
-const userSchema = new mongoose.Schema({
+import RoleClass from './Roles.js';
+
+const userSchema = new Schema({
   name: {
     type: String,
     required: true,
-    min: 6,
-    max: 255,
   },
   email: {
     type: String,
     required: true,
-    min: 6,
-    max: 255,
   },
   password: {
     type: String,
     required: true,
-    min: 6,
-    max: 1024,
   },
-  role: {
-    type: [String],
-    min: 1,
-    default: ['customer'],
+  roles: {
+    type: [{ type: Schema.Types.ObjectId, ref: 'Role' }],
   },
   date: {
     type: Date,
@@ -30,4 +25,39 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+
+class UserClass {
+  constructor(name, email, password) {
+    this.model = new User();
+    this.model.name = name;
+    this.model.email = email;
+    this.model.password = password;
+  }
+
+  async save() {
+    if (this.model.roles.length === 0) {
+      this.model.roles = [await RoleClass.getUserId()];
+      console.log(this.model.roles);
+    }
+    try {
+      var savedUser = await this.model.save();
+    } catch (err) {
+      console.log(err);
+    }
+    return savedUser;
+  }
+  // return not undefined if user with {email} exist in database
+  // findOne return null if not find in database
+  static async findUserByEmail(email) {
+    const result = await User.findOne({ email: email }).exec();
+    return result;
+  }
+
+  // need to find out why the quest does not stop even after document was deleted
+  static async deleteByEmail(email) {
+    await User.deleteMany({ email: email });
+  }
+}
+
+export default UserClass;

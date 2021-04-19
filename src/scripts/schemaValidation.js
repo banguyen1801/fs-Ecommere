@@ -1,12 +1,12 @@
 // VALIDATION
-const Joi = require('@hapi/joi');
+import Joi from '@hapi/joi';
 
 const registerValidation = (data) => {
   const schema = Joi.object({
-    name: Joi.string().min(6).required(),
-    email: Joi.string().min(6).email().required(),
-    role: Joi.array().min(1),
-    password: Joi.string().min(6).required(),
+    name: Joi.string().required(),
+    email: Joi.string().email().required(),
+    role: Joi.array(),
+    password: Joi.string().required(),
   });
 
   return schema.validate(data);
@@ -14,8 +14,8 @@ const registerValidation = (data) => {
 
 const loginValidation = (data) => {
   const schema = Joi.object({
-    email: Joi.string().min(6).email().required(),
-    password: Joi.string().min(6).required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
   });
 
   return schema.validate(data);
@@ -23,14 +23,10 @@ const loginValidation = (data) => {
 
 const productCreationValidation = (data) => {
   const schema = Joi.object({
-    name: Joi.string().min(3).required(),
-    categories: Joi.array().min(1).required(),
+    name: Joi.string().required(),
+    categories: Joi.array().required(),
   });
   return schema.validate(data);
 };
 
-module.exports = {
-  registerValidation,
-  loginValidation,
-  productCreationValidation,
-};
+export { registerValidation, loginValidation, productCreationValidation };

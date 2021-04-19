@@ -1,11 +1,12 @@
-const router = require('express').Router();
-const verify = require('../services/verifyToken');
-const User = require('../models/User');
+import express from 'express';
+const router = express.Router();
+import { verify } from '../services/verifyToken.js';
+import UserClass from '../models/User.js';
 
 // a private route with middleware that check for jwt token
 router.get('/users', verify, async (req, res) => {
-  const user = await User.findOne({ _id: req.user._id });
+  const user = await UserClass.findOne({ _id: req.user._id }).exec();
   res.send(user);
 });
 
-module.exports = router;
+export default router;

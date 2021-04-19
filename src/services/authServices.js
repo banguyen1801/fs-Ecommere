@@ -1,16 +1,15 @@
-const User = require('../models/User');
-const bcrypt = require('bcryptjs');
+import UserClass from '../models/User.js';
 
-const {
+import {
   registerValidation,
   loginValidation,
-} = require('../scripts/schemaValidation');
+} from '../scripts/schemaValidation.js';
 
-const { generateAccessToken, generateRefreshToken } = require('./jwtServices');
+import { generateAccessToken, generateRefreshToken } from './jwtServices.js';
 
-const { hashPassword, validatePassword } = require('../scripts/hashHandler');
+import { hashPassword, validatePassword } from '../scripts/hashHandler.js';
 
-const { badRequest, internal } = require('../errors/ApiError');
+import { badRequest, internal } from '../errors/ApiError.js';
 
 // TODO: handling converting circular structure to JSON and Unhandled promise rejection
 async function registerUserService(req, res) {
@@ -18,25 +17,21 @@ async function registerUserService(req, res) {
   if (error) return badRequest(res, error.details[0].message);
 
   // Check uniqueness of user
-  const emailExist = await User.findOne({ email: req.body.email });
-  if (emailExist) return badRequest(res, 'Email already exist');
+  const user = await UserClass.findUserByEmail(req.body.email);
+  if (user) return badRequest(res, 'Email already exist');
 
   // Hash password with bcryptjs
   const hashedPassword = await hashPassword(req.body.password);
 
-  // Create a new User
-  const user = new User({
-    name: req.body.name,
-    email: req.body.email,
-    role: req.body.role,
-    password: hashedPassword,
-  });
-  try {
-    var savedUser = await user.save();
-  } catch (err) {
-    badRequest(res, err.message);
-  }
-  return savedUser;
+  //  Create a new User
+  const newUser = new UserClass(req.body.name, req.body.email, hashedPassword);
+  await newUser.save();
+  res.json(newUser);
+}
+
+// delete all users with email ben@gmail.com
+async function deleteAllService() {
+  await UserClass.deleteByEmail('ben@gmail.com');
 }
 
 // FIX: there is an UnhandledPromiseRejectionWarning Type Error on validatePassword promise
@@ -45,7 +40,7 @@ async function loginUserService(req, res) {
   const { error } = loginValidation(req.body);
   if (error) return badRequest(res, error.details[0].message);
 
-  const user = await User.findOne({ email: req.body.email });
+  const user = await UserClass.findUserByEmail(req.body.email);
   if (!user) return badRequest(res, 'Email is not found');
 
   const validPass = await validatePassword(req.body.password, user.password);
@@ -57,4 +52,4 @@ async function loginUserService(req, res) {
   return [accessToken, refreshToken];
 }
 
-module.exports = { registerUserService, loginUserService };
+export { registerUserService, loginUserService, deleteAllService };
