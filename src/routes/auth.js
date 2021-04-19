@@ -8,8 +8,10 @@ import {
   deleteAllService,
 } from '../services/authServices.js';
 
+import { checkUserExist } from '../middleware/authMiddlewares.js';
+
 // Register
-router.post('/register', async (req, res) => {
+router.post('/register', checkUserExist, async (req, res) => {
   const savedUser = await registerUserService(req, res);
   res.send(savedUser);
 });

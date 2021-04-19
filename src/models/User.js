@@ -50,7 +50,14 @@ class UserClass {
   // return not undefined if user with {email} exist in database
   // findOne return null if not find in database
   static async findUserByEmail(email) {
-    const result = await User.findOne({ email: email }).exec();
+    const result = await User.findOne({ email: email });
+    console.log(result);
+    return result;
+  }
+
+  static async findUserById(id) {
+    const result = await User.findById(id);
+    console.log(result);
     return result;
   }
 
