@@ -3,14 +3,21 @@ import jwt from 'jsonwebtoken';
 
 //take a user return a new JWT Token signed by user _id
 function generateAccessToken(user) {
-  return jwt.sign({ _id: user._id }, config.accessTokenSecret, {
-    expiresIn: 60 * 60 * 24,
-  });
+  return jwt.sign(
+    { _id: user._id, roles: user.roles },
+    config.accessTokenSecret,
+    {
+      expiresIn: 60 * 60 * 24,
+    }
+  );
 }
 
 //take a user return a new Refresh Token signed by user _id
 function generateRefreshToken(user) {
-  return jwt.sign({ _id: user._id }, config.refreshTokenSecret);
+  return jwt.sign(
+    { _id: user._id, roles: user.roles },
+    config.refreshTokenSecret
+  );
 }
 
 //take a refreshtoken and return verified user which only has info of _id

@@ -1,4 +1,6 @@
-import UserClass from '../models/User.js';
+// import UserClass from '../models/User.js';
+import User from '../models/User.js';
+import Role from '../models/Roles.js';
 
 import {
   registerValidation,
@@ -9,46 +11,55 @@ import { generateAccessToken, generateRefreshToken } from './jwtServices.js';
 
 import { hashPassword, validatePassword } from '../scripts/hashHandler.js';
 
-import { badRequest, internal } from '../errors/ApiError.js';
+import { userExistedErr } from '../errors/ApiError.js';
 
 // TODO: handling converting circular structure to JSON and Unhandled promise rejection
-async function registerUserService(req, res) {
-  const { error } = registerValidation(req.body);
-  if (error) return badRequest(res, error.details[0].message);
-
-  // Check uniqueness of user
-  const user = await UserClass.findUserByEmail(req.body.email);
-  if (user) return badRequest(res, 'Email already exist');
+async function registerUserService(name, email, password) {
+  const { error } = registerValidation({ name, email, password });
+  if (error) console.log(error.details[0].message);
 
   // Hash password with bcryptjs
-  const hashedPassword = await hashPassword(req.body.password);
+  const hashedPassword = await hashPassword(password);
 
-  //  Create a new User
-  const newUser = new UserClass(req.body.name, req.body.email, hashedPassword);
-  await newUser.save();
-  res.json(newUser);
+  const userRoleId = await Role.findOne({ name: 'user' }).exec();
+
+  console.log(userRoleId._id);
+  const user = await User.findOne({ email: email }).exec();
+  if (user) throw userExistedErr(email);
+  const newUser = new User({
+    name: name,
+    email: email,
+    roles: [userRoleId._id],
+    password: hashedPassword,
+  });
+
+  try {
+    var savedUser = await newUser.save();
+  } catch (err) {
+    throw userExistedErr(email);
+  }
+  return savedUser;
 }
 
 // delete all users with email ben@gmail.com
 async function deleteAllService() {
-  await UserClass.deleteByEmail('ben@gmail.com');
+  await User.deleteOne({ email: 'ben@gmail.com' });
 }
 
 // FIX: there is an UnhandledPromiseRejectionWarning Type Error on validatePassword promise
-let refreshTokens = [];
-async function loginUserService(req, res) {
-  const { error } = loginValidation(req.body);
-  if (error) return badRequest(res, error.details[0].message);
 
-  const user = await UserClass.findUserByEmail(req.body.email);
-  if (!user) return badRequest(res, 'Email is not found');
+async function loginUserService(email, password) {
+  const { error } = loginValidation({ email, password });
+  if (error) return console.log(error);
 
-  const validPass = await validatePassword(req.body.password, user.password);
-  if (!validPass) return badRequest(res, 'Password is wrong');
+  const user = await User.findOne({ email: email });
+  if (!user) return console.log('Email is not found');
+
+  const validPass = await validatePassword(password, user.password);
+  if (!validPass) return console.log('Password is wrong');
 
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
-  refreshTokens.push(refreshToken);
   return [accessToken, refreshToken];
 }
 

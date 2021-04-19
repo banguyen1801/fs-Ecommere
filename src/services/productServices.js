@@ -1,36 +1,25 @@
-// import ProductClass from '../models/Products';
+import Product from '../models/Products.js';
 
-// import { productCreationValidation } from '../scripts/schemaValidation';
+import { productCreationValidation } from '../scripts/schemaValidation.js';
 
-// async function addProductServices(req, res) {
-//   const { error } = productCreationValidation(req.body);
-//   if (error) return badRequest(res, error.details[0].message);
+import { badRequest } from '../errors/ApiError.js';
 
-//   // check uniqueness of product by name
-//   // later we should have some other more concrete metric for identify incoming product like a product series (for example miniskirt No-301122)
-//   const nameExist = await Product.findOne({ name: req.body.name }).exec();
-//   if (nameExist) return badRequest(res, 'name already exist');
+async function addProductServices(req, res) {
+  const { error } = productCreationValidation(req.body);
+  if (error) return badRequest(res, error.details[0].message);
 
-//   // Create a new Product
-//   const product = new Product({
-//     name: req.body.name,
-//     categories: req.body.categories,
-//   });
+  // Create a new Product
+  const product = new ProductClass({
+    name: req.body.name,
+    categories: req.body.categories,
+  });
 
-//   try {
-//     var savedProduct = await product.save();
-//   } catch (err) {
-//     badRequest(res, err.message);
-//   }
-//   return savedProduct;
-// }
+  return product.save();
+}
 
-// async function viewAllProductsServices(req, res) {
-//   const allProducts = await Product.find({}).exec();
-//   return allProducts;
-// }
+async function viewAllProductsServices(req, res) {
+  const allProducts = await ProductClass.findAllProduct();
+  return allProducts;
+}
 
-// export default {
-//   addProductServices,
-//   viewAllProductsServices,
-// };
+export { addProductServices, viewAllProductsServices };

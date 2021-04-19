@@ -1,5 +1,8 @@
 function genericErrorHandler(err, req, res, next) {
-  res.status(500);
-  res.render('errorHandler', { error: err });
+  res.json({
+    Code: err.code,
+    Status: err.status,
+    Message: err.message,
+  });
 }
-export default { genericErrorHandler };
+export { genericErrorHandler };

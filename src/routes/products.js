@@ -1,21 +1,22 @@
-// import express from 'express';
-// const router = express.Router();
-// import verify from '../services/verifyToken';
-// import {
-//   addProductServices,
-//   viewAllProductsServices,
-// } from '../services/productServices';
+import express from 'express';
+const router = express.Router();
 
-// // add a single product
-// router.post('/addProducts', verify, async (req, res) => {
-//   const savedProduct = await addProductServices(req, res);
-//   res.json(savedProduct);
-// });
+import {
+  addProductServices,
+  viewAllProductsServices,
+} from '../services/productServices.js';
 
-// // retrieve all products in the database
-// router.get('/productList', verify, async (req, res) => {
-//   const allProducts = await viewAllProductsServices(req, res);
-//   res.json(allProducts);
-// });
+// add a single product
+router.post('/addProducts', async (req, res) => {
+  const savedProduct = await addProductServices(req, res);
+  console.log('this is saved product', savedProduct);
+  res.json(savedProduct);
+});
 
-// export default router;
+// retrieve all products in the database
+router.get('/productList', async (req, res) => {
+  const allProducts = await viewAllProductsServices(req, res);
+  res.json(allProducts);
+});
+
+export default router;

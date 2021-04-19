@@ -1,12 +1,12 @@
 import config from './config/index.js';
 import express from 'express';
-// import genericErrorHandler from './errors/GenericErrorHandler';
+import { genericErrorHandler } from './errors/GenericErrorHandler.js';
 const app = express();
 
 // Import Routes
 import authRoute from './routes/auth.js';
 import postRoute from './routes/posts.js';
-// import productRoute from './routes/products.js';
+import productRoute from './routes/products.js';
 
 // utils
 // require('./scripts/startupDB');
@@ -15,7 +15,6 @@ mongoose.connect(config.databaseURL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
@@ -26,13 +25,14 @@ db.once('open', () => {
 // compression can save a lot of data and improve speed, need to implement and test properly
 // const compression = require('compression');
 // app.use(compression());
-// app.use(genericErrorHandler);
 app.use(express.json());
 
 // Route Middleware
 app.use('/', authRoute);
 app.use('/', postRoute);
-// app.use('/', productRoute);
+app.use('/', productRoute);
+
+app.use(genericErrorHandler);
 
 app.listen(config.port, () =>
   console.log(`################################################

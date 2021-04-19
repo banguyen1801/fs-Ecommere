@@ -8,17 +8,22 @@ import {
   deleteAllService,
 } from '../services/authServices.js';
 
-import { checkUserExist } from '../middleware/authMiddlewares.js';
-
 // Register
-router.post('/register', checkUserExist, async (req, res) => {
-  const savedUser = await registerUserService(req, res);
+router.post('/register', async (req, res) => {
+  const savedUser = await registerUserService(
+    req.body.name,
+    req.body.email,
+    req.body.password
+  );
   res.send(savedUser);
 });
 
 // Login logic
 router.post('/login', async (req, res) => {
-  const [accessToken, refreshToken] = await loginUserService(req, res);
+  const [accessToken, refreshToken] = await loginUserService(
+    req.body.email,
+    req.body.password
+  );
   res.json({ accessToken: accessToken, refreshToken: refreshToken });
 });
 
