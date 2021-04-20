@@ -4,9 +4,8 @@ import { genericErrorHandler } from './errors/GenericErrorHandler.js';
 const app = express();
 
 // Import Routes
-import authRoute from './routes/auth.js';
-import postRoute from './routes/posts.js';
-import productRoute from './routes/products.js';
+import userRoute from './routes/users.route.js';
+import productRoute from './routes/products.route.js';
 
 // utils
 // require('./scripts/startupDB');
@@ -28,8 +27,7 @@ db.once('open', () => {
 app.use(express.json());
 
 // Route Middleware
-app.use('/', authRoute);
-app.use('/', postRoute);
+app.use('/', userRoute);
 app.use('/', productRoute);
 
 app.use(genericErrorHandler);

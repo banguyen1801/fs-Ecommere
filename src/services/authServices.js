@@ -11,21 +11,19 @@ import { generateAccessToken, generateRefreshToken } from './jwtServices.js';
 
 import { hashPassword, validatePassword } from '../scripts/hashHandler.js';
 
-import { userExistedErr } from '../errors/ApiError.js';
-
-// TODO: handling converting circular structure to JSON and Unhandled promise rejection
+// register logic
 async function registerUserService(name, email, password) {
   const { error } = registerValidation({ name, email, password });
-  if (error) console.log(error.details[0].message);
+  if (error) throw new Error(error.details[0].message);
 
   // Hash password with bcryptjs
   const hashedPassword = await hashPassword(password);
 
   const userRoleId = await Role.findOne({ name: 'user' }).exec();
+  if (!userRoleId) throw new Error("User role haven't been created yet");
 
-  console.log(userRoleId._id);
   const user = await User.findOne({ email: email }).exec();
-  if (user) throw userExistedErr(email);
+  if (user) throw new Error('User already existed');
   const newUser = new User({
     name: name,
     email: email,
@@ -36,18 +34,11 @@ async function registerUserService(name, email, password) {
   try {
     var savedUser = await newUser.save();
   } catch (err) {
-    throw userExistedErr(email);
+    throw new Error('Failed to create new user');
   }
   return savedUser;
 }
-
-// delete all users with email ben@gmail.com
-async function deleteAllService() {
-  await User.deleteOne({ email: 'ben@gmail.com' });
-}
-
-// FIX: there is an UnhandledPromiseRejectionWarning Type Error on validatePassword promise
-
+// login logic
 async function loginUserService(email, password) {
   const { error } = loginValidation({ email, password });
   if (error) return console.log(error);
@@ -61,6 +52,10 @@ async function loginUserService(email, password) {
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
   return [accessToken, refreshToken];
+}
+// delete all users with email ben@gmail.com
+async function deleteAllService() {
+  await User.deleteOne({ email: 'ben@gmail.com' });
 }
 
 export { registerUserService, loginUserService, deleteAllService };

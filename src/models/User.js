@@ -1,8 +1,6 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
-import RoleClass from './Roles.js';
-
 const userSchema = new Schema({
   name: {
     type: String,

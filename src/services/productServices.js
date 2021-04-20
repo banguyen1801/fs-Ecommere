@@ -2,24 +2,43 @@ import Product from '../models/Products.js';
 
 import { productCreationValidation } from '../scripts/schemaValidation.js';
 
-import { badRequest } from '../errors/ApiError.js';
+// add one product
+async function addProductServices(name, categories) {
+  const { error } = productCreationValidation({ name, categories });
+  if (error) {
+    throw new Error(error);
+  }
 
-async function addProductServices(req, res) {
-  const { error } = productCreationValidation(req.body);
-  if (error) return badRequest(res, error.details[0].message);
+  const productExist = await Product.findOne({ name: name });
+  if (productExist) {
+    throw new Error('Product already exist!');
+  }
 
   // Create a new Product
-  const product = new ProductClass({
-    name: req.body.name,
-    categories: req.body.categories,
+  const product = new Product({
+    name: name,
+    categories: categories,
   });
-
-  return product.save();
+  try {
+    var savedProduct = await product.save();
+  } catch (err) {
+    throw new Error('Failed to create new product');
+  }
+  return savedProduct;
 }
 
-async function viewAllProductsServices(req, res) {
-  const allProducts = await ProductClass.findAllProduct();
+// get and return a product by its _id
+async function getProductByIdServices(id) {
+  const product = await Product.findById({ _id: id });
+  if (!product) throw new Error(`Cannot find product with id ${id}`);
+  return product;
+}
+
+// get all products available
+async function viewAllProductsServices() {
+  const allProducts = await Product.find({});
+  if (!allProducts) throw new Error('There is no product at the moment');
   return allProducts;
 }
 
-export { addProductServices, viewAllProductsServices };
+export { addProductServices, viewAllProductsServices, getProductByIdServices };

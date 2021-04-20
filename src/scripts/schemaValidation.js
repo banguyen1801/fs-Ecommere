@@ -20,13 +20,13 @@ const loginValidation = (data) => {
   return schema.validate(data);
 };
 
-const productCreationValidation = (name, categories) => {
-  console.log('productCreationValidation', data);
+const productCreationValidation = (data) => {
   const schema = Joi.object({
     name: Joi.string().required(),
     categories: Joi.array().required(),
   });
-  return schema.validate(name, categories);
+
+  return schema.validate(data);
 };
 
 export { registerValidation, loginValidation, productCreationValidation };
