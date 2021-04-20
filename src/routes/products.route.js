@@ -5,9 +5,10 @@ import {
   addProductServices,
   viewAllProductsServices,
   getProductByIdServices,
+  editProductService,
 } from '../services/productServices.js';
 
-// retrieve all products in the database
+// route to retrieve all products in the database
 router.get('/products', async (req, res) => {
   try {
     const allProducts = await viewAllProductsServices();
@@ -17,7 +18,7 @@ router.get('/products', async (req, res) => {
   }
 });
 
-// add one product
+// route to add one product
 router.post('/products', async (req, res) => {
   try {
     const savedProduct = await addProductServices(
@@ -30,7 +31,7 @@ router.post('/products', async (req, res) => {
   }
 });
 
-// get product by _id
+// route to get product by _id
 router.get('/products/:id', async (req, res) => {
   try {
     const product = await getProductByIdServices(req.params['id']);
@@ -40,6 +41,17 @@ router.get('/products/:id', async (req, res) => {
   }
 });
 
-router.post('/');
+// route to edit one product
+router.post('/products/modify', async (req, res) => {
+  try {
+    const editedProduct = await editProductService(
+      req.body._id,
+      req.body.newData
+    );
+    res.json(editedProduct);
+  } catch (err) {
+    res.json({ message: err.message });
+  }
+});
 
 export default router;

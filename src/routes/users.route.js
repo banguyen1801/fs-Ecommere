@@ -2,15 +2,14 @@ import express from 'express';
 const router = express.Router();
 import { verify } from '../middleware/verifyToken.js';
 import User from '../models/User.js';
-import { verifyRefreshToken } from '../services/jwtServices.js';
 
 import {
   registerUserService,
   loginUserService,
   deleteAllService,
-} from '../services/authServices.js';
+} from '../services/userServices.js';
 
-// Register
+// route to Register
 router.post('/register', async (req, res) => {
   try {
   } catch (err) {
@@ -24,7 +23,7 @@ router.post('/register', async (req, res) => {
   res.send(savedUser);
 });
 
-// Login logic
+// route to Login logic
 router.post('/login', async (req, res) => {
   try {
     const [accessToken, refreshToken] = await loginUserService(
@@ -45,7 +44,7 @@ router.post('/users', verify, async (req, res) => {
   res.json(user);
 });
 
-// delete all user
+// route to delete all user
 router.post('/users/delete', async (req, res) => {
   await deleteAllService();
 });

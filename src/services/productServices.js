@@ -2,7 +2,7 @@ import Product from '../models/Products.js';
 
 import { productCreationValidation } from '../scripts/schemaValidation.js';
 
-// add one product
+// service to add one product
 async function addProductServices(name, categories) {
   const { error } = productCreationValidation({ name, categories });
   if (error) {
@@ -27,18 +27,37 @@ async function addProductServices(name, categories) {
   return savedProduct;
 }
 
-// get and return a product by its _id
+// service to get and return a product by its _id
 async function getProductByIdServices(id) {
   const product = await Product.findById({ _id: id });
   if (!product) throw new Error(`Cannot find product with id ${id}`);
   return product;
 }
 
-// get all products available
+// service to get all products available
 async function viewAllProductsServices() {
   const allProducts = await Product.find({});
   if (!allProducts) throw new Error('There is no product at the moment');
   return allProducts;
 }
 
-export { addProductServices, viewAllProductsServices, getProductByIdServices };
+// service to edit one product
+async function editProductService(id, newData) {
+  if (!newData) throw new Error('Nothing passed into service');
+
+  const product = await Product.findOne({ _id: id }).exec();
+  if (!product) throw new Error('Product does not exist');
+
+  const updatedProduct = await Product.findByIdAndUpdate(id, newData, {
+    new: true,
+  });
+
+  return updatedProduct;
+}
+
+export {
+  addProductServices,
+  viewAllProductsServices,
+  getProductByIdServices,
+  editProductService,
+};
