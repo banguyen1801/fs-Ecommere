@@ -1,5 +1,6 @@
 // VALIDATION
-import Joi from '@hapi/joi';
+// import Joi from '@hapi/joi';
+import Joi from 'joi-oid';
 
 const registerValidation = (data) => {
   const schema = Joi.object({
@@ -29,4 +30,20 @@ const productCreationValidation = (data) => {
   return schema.validate(data);
 };
 
-export { registerValidation, loginValidation, productCreationValidation };
+const orderCreationValidation = (data) => {
+  const schema = Joi.object({
+    user_id: Joi.string(),
+    order_items: Joi.array(),
+    detail: Joi.string(),
+    total: Joi.number(),
+    status: Joi.string(),
+  });
+  return schema.validate(data);
+};
+
+export {
+  registerValidation,
+  loginValidation,
+  productCreationValidation,
+  orderCreationValidation,
+};

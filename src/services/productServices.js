@@ -2,6 +2,7 @@ import Product from '../models/Products.js';
 
 import { productCreationValidation } from '../scripts/schemaValidation.js';
 
+import { ProductExistedErr } from '../errors/ApiError.js';
 // service to add one product
 async function addProductServices(name, categories) {
   const { error } = productCreationValidation({ name, categories });
@@ -11,7 +12,7 @@ async function addProductServices(name, categories) {
 
   const productExist = await Product.findOne({ name: name });
   if (productExist) {
-    throw new Error('Product already exist!');
+    throw ProductExistedErr();
   }
 
   // Create a new Product

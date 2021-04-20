@@ -11,6 +11,8 @@ import { generateAccessToken, generateRefreshToken } from './jwtServices.js';
 
 import { hashPassword, validatePassword } from '../scripts/hashHandler.js';
 
+import { UserExistedErr } from '../errors/ApiError.js';
+
 // register logic
 async function registerUserService(name, email, password) {
   const { error } = registerValidation({ name, email, password });
@@ -20,10 +22,10 @@ async function registerUserService(name, email, password) {
   const hashedPassword = await hashPassword(password);
 
   const userRoleId = await Role.findOne({ name: 'user' }).exec();
-  if (!userRoleId) throw new Error("User role haven't been created yet");
+  if (!userRoleId) throw new Error("'user' role haven't been created yet");
 
   const user = await User.findOne({ email: email }).exec();
-  if (user) throw new Error('User already existed');
+  if (user) throw UserExistedErr();
   const newUser = new User({
     name: name,
     email: email,

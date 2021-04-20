@@ -6,6 +6,7 @@ const app = express();
 // Import Routes
 import userRoute from './routes/users.route.js';
 import productRoute from './routes/products.route.js';
+import orderRoute from './routes/orders.route.js';
 
 // utils
 // require('./scripts/startupDB');
@@ -29,6 +30,7 @@ app.use(express.json());
 // Route Middleware
 app.use('/', userRoute);
 app.use('/', productRoute);
+app.use('/', orderRoute);
 
 app.use(genericErrorHandler);
 

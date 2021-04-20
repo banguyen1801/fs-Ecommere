@@ -7,49 +7,36 @@ const internal = (res, msg) => {
 };
 
 // user errors
-const userExistedErr = (email) => ({
+const UserExistedErr = () => ({
   code: 'User Existed',
   status: 401,
-  message: `${email} already been use `,
+  message: `User with this email already been created `,
 });
 
 // product errors
-const productExistedErr = (product) => ({
+const ProductExistedErr = () => ({
   code: 'Product Existed',
   status: 401,
-  message: `${product} already exist! `,
+  message: `Product already exist! `,
 });
 
-//crud failed
-
-const createFailed = (thingName) => ({
-  code: 'Create operation failed',
-  status: 400,
-  message: `${thingName}: failed to create!`,
+// order errors
+const OrderDBEmptyErr = () => ({
+  code: 'Cannot find Order Doc in DB',
+  status: 404,
+  message: `Order collection is empty`,
 });
-const removeFailed = (thingName) => ({
-  code: 'Remove operation failed',
-  status: 400,
-  message: `${thingName}: failed to remove!`,
-});
-const updateFailed = (thingName) => ({
-  code: 'Update operation failed',
-  status: 400,
-  message: `${thingName}: failed to update!`,
-});
-const deleteFailed = (thingName) => ({
-  code: 'Delete operation failed',
-  status: 400,
-  message: `${thingName}: failed to delete!`,
+const OrderNotExistErr = () => ({
+  code: 'Order Not Existed',
+  status: 404,
+  message: `Order Not Existed!`,
 });
 
 export {
   badRequest,
   internal,
-  userExistedErr,
-  productExistedErr,
-  createFailed,
-  removeFailed,
-  updateFailed,
-  deleteFailed,
+  UserExistedErr,
+  ProductExistedErr,
+  OrderDBEmptyErr,
+  OrderNotExistErr,
 };

@@ -1,4 +1,5 @@
 import express from 'express';
+import { OrderNotExistErr } from '../errors/ApiError.js';
 const router = express.Router();
 import { verify } from '../middleware/verifyToken.js';
 import User from '../models/User.js';
@@ -11,21 +12,21 @@ import {
   editUserService,
 } from '../services/userServices.js';
 
-// route to Register
-router.post('/register', async (req, res) => {
+// Register
+router.post('/register', async (req, res, next) => {
   try {
+    const savedUser = await registerUserService(
+      req.body.name,
+      req.body.email,
+      req.body.password
+    );
+    res.json(savedUser);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    next(err);
   }
-  const savedUser = await registerUserService(
-    req.body.name,
-    req.body.email,
-    req.body.password
-  );
-  res.send(savedUser);
 });
 
-// route to Login logic
+// Login logic
 router.post('/login', async (req, res) => {
   try {
     const [accessToken, refreshToken] = await loginUserService(
@@ -38,20 +39,18 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// POST REQUEST
-// PARAMS req.user._id
 // return full info of a user who already had a valid JWT token
 router.post('/users', verify, async (req, res) => {
   const user = await User.findById({ _id: req.user._id });
   res.json(user);
 });
 
-// route to delete one user with email ben@gmail.com
+// delete one user with email ben@gmail.com
 router.post('/users/delete', async (req, res) => {
   await deleteAllService();
 });
 
-// route to get all users
+// get all users
 router.get('/users', async (req, res) => {
   try {
     const allUser = await getAllUsersService();
