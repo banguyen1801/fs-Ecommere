@@ -7,6 +7,8 @@ import {
   registerUserService,
   loginUserService,
   deleteAllService,
+  getAllUsersService,
+  editUserService,
 } from '../services/userServices.js';
 
 // route to Register
@@ -44,9 +46,29 @@ router.post('/users', verify, async (req, res) => {
   res.json(user);
 });
 
-// route to delete all user
+// route to delete one user with email ben@gmail.com
 router.post('/users/delete', async (req, res) => {
   await deleteAllService();
+});
+
+// route to get all users
+router.get('/users', async (req, res) => {
+  try {
+    const allUser = await getAllUsersService();
+    res.json(allUser);
+  } catch (err) {
+    res.json({ message: err.message });
+  }
+});
+
+//route to edit one user
+router.post('/users/modify', async (req, res) => {
+  try {
+    const editedUser = await editUserService(req.body._id, req.body.newData);
+    res.json(editedUser);
+  } catch (err) {
+    res.json({ message: err.message });
+  }
 });
 
 // this route is used for verifying requestToken and gain user a new JWT accessToken

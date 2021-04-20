@@ -57,5 +57,27 @@ async function loginUserService(email, password) {
 async function deleteAllService() {
   await User.deleteOne({ email: 'ben@gmail.com' });
 }
+// get all users
+async function getAllUsersService() {
+  const allUsers = await User.find({}).exec();
+  if (!allUsers) throw new Error('There are no user in the Database');
+  return allUsers;
+}
 
-export { registerUserService, loginUserService, deleteAllService };
+async function editUserService(id, newData) {
+  if (!newData) throw new Error('No newData passed into body');
+
+  const user = await User.findOne({ _id: id }).exec();
+  if (!user) throw new Error('This user does not exist in Database');
+
+  const editedUser = await User.findByIdAndUpdate(id, newData, { new: true });
+  return editedUser;
+}
+
+export {
+  registerUserService,
+  loginUserService,
+  deleteAllService,
+  getAllUsersService,
+  editUserService,
+};
