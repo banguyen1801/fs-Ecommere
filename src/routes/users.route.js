@@ -1,5 +1,4 @@
 import express from 'express';
-import { OrderNotExistErr } from '../errors/ApiError.js';
 const router = express.Router();
 import { verify } from '../middleware/verifyToken.js';
 import User from '../models/User.js';
@@ -39,17 +38,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// return full info of a user who already had a valid JWT token
-router.post('/users', verify, async (req, res) => {
-  const user = await User.findById({ _id: req.user._id });
-  res.json(user);
-});
-
-// delete one user with email ben@gmail.com
-router.post('/users/delete', async (req, res) => {
-  await deleteAllService();
-});
-
 // get all users
 router.get('/users', async (req, res) => {
   try {
@@ -60,6 +48,11 @@ router.get('/users', async (req, res) => {
   }
 });
 
+// return full info of a user who already had a valid JWT token
+router.post('/users', verify, async (req, res) => {
+  const user = await User.findById({ _id: req.user._id });
+  res.json(user);
+});
 //route to edit one user
 router.post('/users/modify', async (req, res) => {
   try {
@@ -68,6 +61,11 @@ router.post('/users/modify', async (req, res) => {
   } catch (err) {
     res.json({ message: err.message });
   }
+});
+
+// delete one user with email ben@gmail.com
+router.post('/users/delete', async (req, res) => {
+  await deleteAllService();
 });
 
 // this route is used for verifying requestToken and gain user a new JWT accessToken

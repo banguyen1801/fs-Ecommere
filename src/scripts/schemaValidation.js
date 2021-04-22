@@ -30,13 +30,9 @@ const productCreationValidation = (data) => {
   return schema.validate(data);
 };
 
-const orderCreationValidation = (data) => {
+const cartCreationValidation = (data) => {
   const schema = Joi.object({
     user_id: Joi.string(),
-    order_items: Joi.array(),
-    detail: Joi.string(),
-    total: Joi.number(),
-    status: Joi.string(),
   });
   return schema.validate(data);
 };
@@ -45,5 +41,5 @@ export {
   registerValidation,
   loginValidation,
   productCreationValidation,
-  orderCreationValidation,
+  cartCreationValidation,
 };

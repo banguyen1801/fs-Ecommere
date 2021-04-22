@@ -30,17 +30,6 @@ router.post('/products', async (req, res, next) => {
     next(err);
   }
 });
-
-// get product by _id
-router.get('/products/:id', async (req, res, next) => {
-  try {
-    const product = await getProductByIdServices(req.params['id']);
-    res.json(product);
-  } catch (err) {
-    next(err);
-  }
-});
-
 // edit one product
 router.post('/products/modify', async (req, res, next) => {
   try {
@@ -49,6 +38,16 @@ router.post('/products/modify', async (req, res, next) => {
       req.body.newData
     );
     res.json(editedProduct);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// get product by _id
+router.get('/products/:id', async (req, res, next) => {
+  try {
+    const product = await getProductByIdServices(req.params['id']);
+    res.json(product);
   } catch (err) {
     next(err);
   }

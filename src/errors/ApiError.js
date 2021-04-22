@@ -21,15 +21,15 @@ const ProductExistedErr = () => ({
 });
 
 // order errors
-const OrderDBEmptyErr = () => ({
-  code: 'Cannot find Order Doc in DB',
+const CartDBEmptyErr = () => ({
+  code: 'Cannot find Cart Doc in DB',
   status: 404,
-  message: `Order collection is empty`,
+  message: `Cart collection is empty`,
 });
-const OrderNotExistErr = () => ({
-  code: 'Order Not Existed',
+const CartNotExistErr = () => ({
+  code: 'Cart Not Existed',
   status: 404,
-  message: `Order Not Existed!`,
+  message: `Cart Not Existed!`,
 });
 
 export {
@@ -37,6 +37,6 @@ export {
   internal,
   UserExistedErr,
   ProductExistedErr,
-  OrderDBEmptyErr,
-  OrderNotExistErr,
+  CartDBEmptyErr,
+  CartNotExistErr,
 };
