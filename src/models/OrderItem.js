@@ -3,14 +3,18 @@ const Schema = mongoose.Schema;
 // Product: only women atm, no info about others such as men, girls and boys
 const orderItemSchema = new mongoose.Schema({
   product_id: {
-    type: { type: Schema.Types.ObjectId, ref: 'Product' },
+    type: Schema.Types.ObjectId,
+    ref: 'Product',
+    required: true,
   },
   order_id: {
-    type: { type: Schema.Types.ObjectId, ref: 'Order' },
+    type: Schema.Types.ObjectId,
+    ref: 'Order',
+    required: true,
   },
   quantity: {
     type: Number,
-    required: true,
+    default: 0,
   },
   date: {
     type: Date,

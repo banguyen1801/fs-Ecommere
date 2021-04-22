@@ -38,7 +38,6 @@ router.post('/carts/modify', async (req, res, next) => {
 });
 // retrieve one cart by _user_id
 router.get('/carts/:id', async (req, res, next) => {
-  console.log(req.params.id);
   try {
     const cart = await getCartByUserIdService(req.params.id);
     res.json(cart);

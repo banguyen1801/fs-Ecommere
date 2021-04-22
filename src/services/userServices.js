@@ -1,6 +1,6 @@
 // import UserClass from '../models/User.js';
 import User from '../models/User.js';
-import Role from '../models/Roles.js';
+import Role from '../models/Role.js';
 
 import {
   registerValidation,

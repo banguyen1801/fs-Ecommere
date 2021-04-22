@@ -20,7 +20,7 @@ const ProductExistedErr = () => ({
   message: `Product already exist! `,
 });
 
-// order errors
+// cart errors
 const CartDBEmptyErr = () => ({
   code: 'Cannot find Cart Doc in DB',
   status: 404,
@@ -32,6 +32,14 @@ const CartNotExistErr = () => ({
   message: `Cart Not Existed!`,
 });
 
+//order errors
+
+const OrderNotExistErr = () => ({
+  code: 'Order Not Existed',
+  status: 404,
+  message: `Order Not Existed!`,
+});
+
 export {
   badRequest,
   internal,
@@ -39,4 +47,5 @@ export {
   ProductExistedErr,
   CartDBEmptyErr,
   CartNotExistErr,
+  OrderNotExistErr,
 };

@@ -7,6 +7,7 @@ const app = express();
 import userRoute from './routes/users.route.js';
 import productRoute from './routes/products.route.js';
 import cartRoute from './routes/carts.route.js';
+import orderRoute from './routes/orders.route.js';
 
 // utils
 // require('./scripts/startupDB');
@@ -14,6 +15,7 @@ import mongoose from 'mongoose';
 mongoose.connect(config.databaseURL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  useFindAndModify: false,
 });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -31,6 +33,7 @@ app.use(express.json());
 app.use('/', userRoute);
 app.use('/', productRoute);
 app.use('/', cartRoute);
+app.use('/', orderRoute);
 
 app.use(genericErrorHandler);
 

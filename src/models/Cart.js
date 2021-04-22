@@ -11,15 +11,6 @@ const cartSchema = new mongoose.Schema({
     type: [{ type: Schema.Types.ObjectId, ref: 'CartItem' }],
     default: [],
   },
-  total: {
-    type: Number,
-    default: 0,
-  },
-  // status: {
-  //   type: String,
-  //   enum: ['Completed', 'Pending', 'Canceled'],
-  //   default: 'Pending',
-  // },
   date: {
     type: Date,
     default: Date.now(),

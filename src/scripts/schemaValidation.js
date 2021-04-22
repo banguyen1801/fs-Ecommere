@@ -32,7 +32,15 @@ const productCreationValidation = (data) => {
 
 const cartCreationValidation = (data) => {
   const schema = Joi.object({
-    user_id: Joi.string(),
+    user_id: Joi.string().required(),
+  });
+  return schema.validate(data);
+};
+
+const orderCreationValidation = (data) => {
+  const schema = Joi.object({
+    user_id: Joi.string().required(),
+    detail: Joi.array(),
   });
   return schema.validate(data);
 };
@@ -42,4 +50,5 @@ export {
   loginValidation,
   productCreationValidation,
   cartCreationValidation,
+  orderCreationValidation,
 };
