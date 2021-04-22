@@ -45,10 +45,19 @@ const orderCreationValidation = (data) => {
   return schema.validate(data);
 };
 
+const orderItemCreationValidation = (data) => {
+  const schema = Joi.object({
+    product_id: Joi.string().required(),
+    order_id: Joi.string().required(),
+  });
+  return schema.validate(data);
+};
+
 export {
   registerValidation,
   loginValidation,
   productCreationValidation,
   cartCreationValidation,
   orderCreationValidation,
+  orderItemCreationValidation,
 };

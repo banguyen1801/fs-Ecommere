@@ -12,7 +12,6 @@ async function getAllOrdersService() {
 
 // create one order
 async function createOrderService(user_id, detail) {
-  console.log(user_id, detail);
   const { error } = await orderCreationValidation({ user_id, detail });
   if (error) throw new Error(error);
   const order = new Order({
@@ -30,7 +29,6 @@ async function createOrderService(user_id, detail) {
 // update one order
 async function updateOrderService(order_id, newData) {
   if (!newData) throw new Error('newData is not available');
-  console.log(order_id, newData);
   const orderExist = await Order.find({ _id: order_id }).exec();
 
   if (!orderExist) throw OrderNotExistErr();

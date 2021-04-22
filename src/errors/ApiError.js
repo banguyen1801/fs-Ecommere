@@ -40,6 +40,13 @@ const OrderNotExistErr = () => ({
   message: `Order Not Existed!`,
 });
 
+// orderItem errors
+
+const OrderItemNotExistErr = () => ({
+  code: 'OrderItem Not Existed',
+  status: 404,
+  message: 'OrderItem Not Existed',
+});
 export {
   badRequest,
   internal,
@@ -48,4 +55,5 @@ export {
   CartDBEmptyErr,
   CartNotExistErr,
   OrderNotExistErr,
+  OrderItemNotExistErr,
 };

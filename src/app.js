@@ -8,6 +8,7 @@ import userRoute from './routes/users.route.js';
 import productRoute from './routes/products.route.js';
 import cartRoute from './routes/carts.route.js';
 import orderRoute from './routes/orders.route.js';
+import orderItemRoute from './routes/orderItems.route.js';
 
 // utils
 // require('./scripts/startupDB');
@@ -34,6 +35,7 @@ app.use('/', userRoute);
 app.use('/', productRoute);
 app.use('/', cartRoute);
 app.use('/', orderRoute);
+app.use('/', orderItemRoute);
 
 app.use(genericErrorHandler);
 
