@@ -52,8 +52,8 @@ router.get('/products/:params1/:page', async (req, res, next) => {
     page: req.params.page,
   };
   try {
-    const filteredProduct = await advancedProductSearchService(value);
-    res.json(filteredProduct);
+    const { product, maxPage } = await advancedProductSearchService(value);
+    res.json({ product, maxPage });
   } catch (err) {
     next(err);
   }

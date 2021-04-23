@@ -41,6 +41,7 @@ async function editProductService(id, newData) {
 
 async function advancedProductSearchService({ params1, params2, page }) {
   // const sortOption = sortIdentifier(sort);
+
   const filteredProduct = await Product.find({
     categories: { $in: [params1, params2] },
   })
@@ -48,10 +49,14 @@ async function advancedProductSearchService({ params1, params2, page }) {
     .limit(15)
     // .sort(sortOption)
     .exec();
+
+  const maxPageNumber = await Product.find({
+    categories: { $in: [params1, params2] },
+  }).countDocuments();
   if (!filteredProduct)
     throw new Error("Product of this category doesn't exist");
 
-  return filteredProduct;
+  return { product: filteredProduct, maxPage: Math.ceil(maxPageNumber / 15) };
 }
 
 async function sortIdentifier(sort) {
