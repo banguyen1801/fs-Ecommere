@@ -39,14 +39,38 @@ async function editProductService(id, newData) {
   return updatedProduct;
 }
 
-async function advancedProductSearchService({ params1, params2 }) {
+async function advancedProductSearchService({ params1, params2, page }) {
+  // const sortOption = sortIdentifier(sort);
   const filteredProduct = await Product.find({
     categories: { $in: [params1, params2] },
-  }).exec();
+  })
+    .skip((page - 1) * 15)
+    .limit(15)
+    // .sort(sortOption)
+    .exec();
   if (!filteredProduct)
     throw new Error("Product of this category doesn't exist");
 
   return filteredProduct;
+}
+
+async function sortIdentifier(sort) {
+  switch (sort) {
+    case 'a-Z':
+      sort = '-name';
+      return sort;
+    case 'Z-a':
+      sort = 'name';
+      return sort;
+    case 'highestprice':
+      sort = '-price';
+      return sort;
+    case 'lowestprice':
+      sort = 'price';
+      return sort;
+    default:
+      return '';
+  }
 }
 
 export {

@@ -45,9 +45,11 @@ router.post('/products/modify', async (req, res, next) => {
 
 // get product with filtered categories
 // filter with product_type
-router.get('/products/:params1', async (req, res, next) => {
+
+router.get('/products/:params1/:page', async (req, res, next) => {
   let value = {
     params1: req.params.params1,
+    page: req.params.page,
   };
   try {
     const filteredProduct = await advancedProductSearchService(value);
@@ -58,10 +60,11 @@ router.get('/products/:params1', async (req, res, next) => {
 });
 
 // filter with product_type and collection
-router.get('/products/:params1/:params2', async (req, res, next) => {
+router.get('/products/:params1/:params2/:page', async (req, res, next) => {
   let value = {
     params1: req.params.params1,
     params2: req.params.params2,
+    page: req.params.page,
   };
   try {
     const filteredProduct = await advancedProductSearchService(value);
