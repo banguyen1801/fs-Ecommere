@@ -5,16 +5,6 @@ import { productCreationValidation } from '../scripts/schemaValidation.js';
 import { ProductExistedErr } from '../errors/ApiError.js';
 // service to add one product
 async function addProductServices(name, categories) {
-  const { error } = productCreationValidation({ name, categories });
-  if (error) {
-    throw new Error(error);
-  }
-
-  const productExist = await Product.findOne({ name: name });
-  if (productExist) {
-    throw ProductExistedErr();
-  }
-
   // Create a new Product
   const product = new Product({
     name: name,
@@ -28,16 +18,9 @@ async function addProductServices(name, categories) {
   return savedProduct;
 }
 
-// service to get and return a product by its _id
-async function getProductByIdServices(id) {
-  const product = await Product.findById({ _id: id });
-  if (!product) throw new Error(`Cannot find product with id ${id}`);
-  return product;
-}
-
 // service to get all products available
 async function viewAllProductsServices() {
-  const allProducts = await Product.find({});
+  const allProducts = await Product.find({}).skip(15).limit(15);
   if (!allProducts) throw new Error('There is no product at the moment');
   return allProducts;
 }
@@ -56,9 +39,19 @@ async function editProductService(id, newData) {
   return updatedProduct;
 }
 
+async function advancedProductSearchService({ params1, params2 }) {
+  const filteredProduct = await Product.find({
+    categories: { $in: [params1, params2] },
+  }).exec();
+  if (!filteredProduct)
+    throw new Error("Product of this category doesn't exist");
+
+  return filteredProduct;
+}
+
 export {
   addProductServices,
   viewAllProductsServices,
-  getProductByIdServices,
   editProductService,
+  advancedProductSearchService,
 };

@@ -10,9 +10,10 @@ import cartRoute from './routes/carts.route.js';
 import orderRoute from './routes/orders.route.js';
 import orderItemRoute from './routes/orderItems.route.js';
 
-// utils
-// require('./scripts/startupDB');
+// database connection and product table population
 import mongoose from 'mongoose';
+import product from './productData.js';
+import Product from './models/Product.js';
 mongoose.connect(config.databaseURL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -20,14 +21,18 @@ mongoose.connect(config.databaseURL, {
 });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', () => {
-  console.log('connected to db');
+db.once('open', async () => {
+  console.log('Connected to db');
+  await populateProducts(product);
 });
 
-// Middleware
-// compression can save a lot of data and improve speed, need to implement and test properly
-// const compression = require('compression');
-// app.use(compression());
+async function populateProducts(products) {
+  const productTable = await Product.find({});
+  if (productTable.length > 0)
+    return console.log('Table already been populated');
+  await Product.insertMany(products);
+}
+
 app.use(express.json());
 
 // Route Middleware
@@ -44,3 +49,5 @@ app.listen(config.port, () =>
 🛡️  Server listening on port: ${config.port} 🛡️
 ################################################`)
 );
+
+const productTable = [];

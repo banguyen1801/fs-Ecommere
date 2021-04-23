@@ -4,8 +4,8 @@ const router = express.Router();
 import {
   addProductServices,
   viewAllProductsServices,
-  getProductByIdServices,
   editProductService,
+  advancedProductSearchService,
 } from '../services/productServices.js';
 
 // retrieve all products in the database
@@ -43,11 +43,29 @@ router.post('/products/modify', async (req, res, next) => {
   }
 });
 
-// get product by _id
-router.get('/products/:id', async (req, res, next) => {
+// get product with filtered categories
+// filter with product_type
+router.get('/products/:params1', async (req, res, next) => {
+  let value = {
+    params1: req.params.params1,
+  };
   try {
-    const product = await getProductByIdServices(req.params['id']);
-    res.json(product);
+    const filteredProduct = await advancedProductSearchService(value);
+    res.json(filteredProduct);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// filter with product_type and collection
+router.get('/products/:params1/:params2', async (req, res, next) => {
+  let value = {
+    params1: req.params.params1,
+    params2: req.params.params2,
+  };
+  try {
+    const filteredProduct = await advancedProductSearchService(value);
+    res.json(filteredProduct);
   } catch (err) {
     next(err);
   }
