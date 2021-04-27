@@ -58,7 +58,9 @@ async function advancedProductSearchService({ categories, page, sort }) {
 
   const maxPageNumber = await Product.find({
     categories: { $in: categories },
-  }).countDocuments();
+  })
+    .sort(sortOption)
+    .countDocuments();
   if (!filteredProduct)
     throw new Error("Product of this category doesn't exist");
 
