@@ -6,10 +6,11 @@ import {
   viewAllProductsServices,
   editProductService,
   advancedProductSearchService,
+  findProductByIdService,
 } from '../services/productServices.js';
 
 // retrieve all products in the database
-router.get('/products', async (req, res) => {
+router.get('/products/all', async (req, res) => {
   try {
     const allProducts = await viewAllProductsServices();
     res.json(allProducts);
@@ -46,29 +47,32 @@ router.post('/products/modify', async (req, res, next) => {
 // get product with filtered categories
 // filter with product_type
 
-router.get('/products/:params1/:page', async (req, res, next) => {
+// filter with product_type and collection
+// TODO: https://www.sitepoint.com/get-url-parameters-with-javascript/#:~:text=URL%20parameters%20%28also%20called%20query%20string%20parameters%20or,link%20referrals%2C%20product%20information%2C%20user%20preferences%2C%20and%20more.
+router.get('/products/advanced', async (req, res, next) => {
+  console.log(req.query);
   let value = {
-    params1: req.params.params1,
-    page: req.params.page,
+    categories: req.query.categories,
+    page: req.query.page,
+    sort: req.query.sort,
   };
+  // let value = {
+  //   params1: req.params.params1,
+  //   params2: req.params.params2,
+  //   page: req.params.page,
+  // };
   try {
-    const { product, maxPage } = await advancedProductSearchService(value);
-    res.json({ product, maxPage });
+    const filteredProduct = await advancedProductSearchService(value);
+    res.json(filteredProduct);
   } catch (err) {
     next(err);
   }
 });
 
-// filter with product_type and collection
-router.get('/products/:params1/:params2/:page', async (req, res, next) => {
-  let value = {
-    params1: req.params.params1,
-    params2: req.params.params2,
-    page: req.params.page,
-  };
+router.get('/products/:id', async (req, res, next) => {
   try {
-    const filteredProduct = await advancedProductSearchService(value);
-    res.json(filteredProduct);
+    const product = await findProductByIdService(req.params.id);
+    res.json(product);
   } catch (err) {
     next(err);
   }

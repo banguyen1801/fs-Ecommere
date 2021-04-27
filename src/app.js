@@ -34,13 +34,14 @@ async function populateProducts(products) {
 }
 
 app.use(express.json());
+app.use(express.urlencoded());
 
 // Route Middleware
-app.use('/', userRoute);
-app.use('/', productRoute);
-app.use('/', cartRoute);
-app.use('/', orderRoute);
-app.use('/', orderItemRoute);
+app.use('/api', userRoute);
+app.use('/api', productRoute);
+app.use('/api', cartRoute);
+app.use('/api', orderRoute);
+app.use('/api', orderItemRoute);
 
 app.use(genericErrorHandler);
 

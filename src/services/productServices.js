@@ -25,6 +25,12 @@ async function viewAllProductsServices() {
   return allProducts;
 }
 
+async function findProductByIdService(id) {
+  const product = await Product.findById(id).exec();
+  if (!product) throw new Error(`Product with ${id} does not exist`);
+  return product;
+}
+
 // service to edit one product
 async function editProductService(id, newData) {
   if (!newData) throw new Error('Nothing passed into service');
@@ -39,19 +45,19 @@ async function editProductService(id, newData) {
   return updatedProduct;
 }
 
-async function advancedProductSearchService({ params1, params2, page }) {
-  // const sortOption = sortIdentifier(sort);
+async function advancedProductSearchService({ categories, page, sort }) {
+  const sortOption = await sortIdentifier(sort);
 
   const filteredProduct = await Product.find({
-    categories: { $in: [params1, params2] },
+    categories: { $in: categories },
   })
     .skip((page - 1) * 15)
-    .limit(15)
-    // .sort(sortOption)
+    .limit(5)
+    .sort(sortOption)
     .exec();
 
   const maxPageNumber = await Product.find({
-    categories: { $in: [params1, params2] },
+    categories: { $in: categories },
   }).countDocuments();
   if (!filteredProduct)
     throw new Error("Product of this category doesn't exist");
@@ -59,22 +65,18 @@ async function advancedProductSearchService({ params1, params2, page }) {
   return { product: filteredProduct, maxPage: Math.ceil(maxPageNumber / 15) };
 }
 
-async function sortIdentifier(sort) {
+async function sortIdentifier(sort = '') {
   switch (sort) {
-    case 'a-Z':
-      sort = '-name';
-      return sort;
-    case 'Z-a':
-      sort = 'name';
-      return sort;
+    case 'A-Z':
+      return { name: 1 };
+    case 'Z-A':
+      return { name: -1 };
     case 'highestprice':
-      sort = '-price';
-      return sort;
+      return { price: -1 };
     case 'lowestprice':
-      sort = 'price';
-      return sort;
+      return { price: 1 };
     default:
-      return '';
+      return {};
   }
 }
 
@@ -83,4 +85,5 @@ export {
   viewAllProductsServices,
   editProductService,
   advancedProductSearchService,
+  findProductByIdService,
 };
