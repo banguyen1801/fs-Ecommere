@@ -25,6 +25,9 @@ const productSchema = new mongoose.Schema(
     categories: {
       type: [String],
     },
+    popularity: {
+      type: Number,
+    },
   },
   { timestamps: true }
 );

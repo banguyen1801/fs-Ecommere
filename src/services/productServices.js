@@ -21,8 +21,9 @@ async function addProductServices(name, categories) {
 // service to get all products available
 async function viewAllProductsServices() {
   const allProducts = await Product.find({}).skip(15).limit(15);
+  const count = await Product.find({}).countDocuments();
   if (!allProducts) throw new Error('There is no product at the moment');
-  return allProducts;
+  return { product: allProducts, maxPage: Math.ceil(count / 15) };
 }
 
 async function findProductByIdService(id) {
@@ -51,12 +52,12 @@ async function advancedProductSearchService({ categories, page, sort }) {
   const filteredProduct = await Product.find({
     categories: { $in: categories },
   })
-    .skip((page - 1) * 15)
-    .limit(5)
     .sort(sortOption)
+    .skip((page - 1) * 15)
+    .limit(15)
     .exec();
 
-  const maxPageNumber = await Product.find({
+  const count = await Product.find({
     categories: { $in: categories },
   })
     .sort(sortOption)
@@ -64,7 +65,7 @@ async function advancedProductSearchService({ categories, page, sort }) {
   if (!filteredProduct)
     throw new Error("Product of this category doesn't exist");
 
-  return { product: filteredProduct, maxPage: Math.ceil(maxPageNumber / 15) };
+  return { product: filteredProduct, maxPage: Math.ceil(count / 15) };
 }
 
 async function sortIdentifier(sort = '') {

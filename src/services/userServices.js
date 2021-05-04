@@ -53,7 +53,7 @@ async function loginUserService(email, password) {
 
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
-  return [accessToken, refreshToken];
+  return [accessToken, refreshToken, user];
 }
 // delete all users with email ben@gmail.com
 async function deleteAllService() {

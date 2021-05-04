@@ -3,6 +3,9 @@ import express from 'express';
 import { genericErrorHandler } from './errors/GenericErrorHandler.js';
 const app = express();
 
+import cors from 'cors';
+import morgan from 'morgan';
+
 // Import Routes
 import userRoute from './routes/users.route.js';
 import productRoute from './routes/products.route.js';
@@ -34,7 +37,9 @@ async function populateProducts(products) {
 }
 
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use(morgan('dev'));
 
 // Route Middleware
 app.use('/api', userRoute);

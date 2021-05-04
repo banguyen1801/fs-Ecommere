@@ -15,9 +15,9 @@ import {
 router.post('/register', async (req, res, next) => {
   try {
     const savedUser = await registerUserService(
-      req.body.name,
-      req.body.email,
-      req.body.password
+      req.body.params.name,
+      req.body.params.email,
+      req.body.params.password
     );
     res.json(savedUser);
   } catch (err) {
@@ -28,11 +28,15 @@ router.post('/register', async (req, res, next) => {
 // Login logic
 router.post('/login', async (req, res) => {
   try {
-    const [accessToken, refreshToken] = await loginUserService(
-      req.body.email,
-      req.body.password
+    const [accessToken, refreshToken, user] = await loginUserService(
+      req.body.params.email,
+      req.body.params.password
     );
-    res.json({ accessToken: accessToken, refreshToken: refreshToken });
+    res.json({
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      user: user,
+    });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -53,10 +57,14 @@ router.post('/users', verify, async (req, res) => {
   const user = await User.findById({ _id: req.user._id });
   res.json(user);
 });
+
 //route to edit one user
 router.post('/users/modify', async (req, res) => {
   try {
-    const editedUser = await editUserService(req.body._id, req.body.newData);
+    const editedUser = await editUserService(
+      req.body.params._id,
+      req.body.params.newData
+    );
     res.json(editedUser);
   } catch (err) {
     res.json({ message: err.message });

@@ -23,8 +23,8 @@ router.get('/products/all', async (req, res) => {
 router.post('/products', async (req, res, next) => {
   try {
     const savedProduct = await addProductServices(
-      req.body.name,
-      req.body.categories
+      req.body.params.name,
+      req.body.params.categories
     );
     res.json(savedProduct);
   } catch (err) {
@@ -35,8 +35,8 @@ router.post('/products', async (req, res, next) => {
 router.post('/products/modify', async (req, res, next) => {
   try {
     const editedProduct = await editProductService(
-      req.body._id,
-      req.body.newData
+      req.body.params._id,
+      req.body.params.newData
     );
     res.json(editedProduct);
   } catch (err) {
@@ -56,11 +56,6 @@ router.get('/products/advanced', async (req, res, next) => {
     page: req.query.page,
     sort: req.query.sort,
   };
-  // let value = {
-  //   params1: req.params.params1,
-  //   params2: req.params.params2,
-  //   page: req.params.page,
-  // };
   try {
     const filteredProduct = await advancedProductSearchService(value);
     res.json(filteredProduct);
