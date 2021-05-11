@@ -11,27 +11,32 @@ async function getAllOrdersService() {
 }
 
 // create one order
-async function createOrderService(user_id, detail) {
-  const { error } = await orderCreationValidation({ user_id, detail });
+async function createOrderService(user_id, items) {
+  const { error } = await orderCreationValidation({ user_id, items });
   if (error) throw new Error(error);
   const order = new Order({
     user_id,
-    detail,
+    items,
   });
   try {
     var savedOrder = await order.save();
   } catch (err) {
-    throw new Error('unable to create new order');
+    throw new Error(`unable to create new order with user_id ${user_id}`);
   }
   return savedOrder;
 }
 
 // update one order
 async function updateOrderService(order_id, newData) {
-  if (!newData) throw new Error('newData is not available');
-  const orderExist = await Order.find({ _id: order_id }).exec();
+  const orderExist = await Order.findOne({
+    _id: order_id,
+    status: 'Pending',
+  }).exec();
 
-  if (!orderExist) throw OrderNotExistErr();
+  if (!orderExist)
+    throw new Error(
+      `Order id ${order_id} does not existed or order status is not Pending`
+    );
 
   const updatedOrder = await Order.findByIdAndUpdate(order_id, newData, {
     new: true,
@@ -39,10 +44,23 @@ async function updateOrderService(order_id, newData) {
   return updatedOrder;
 }
 
+async function advancedOrdersSearchService({ page }) {
+  const filteredOrder = await Order.find({})
+
+    .skip((page - 1) * 10)
+    .limit(10)
+    .exec();
+
+  const count = await Order.find({}).countDocuments();
+  if (!filteredOrder) throw new Error("Orders doesn't exist");
+
+  return { order: filteredOrder, maxPage: Math.ceil(count / 10) };
+}
+
 // getOrderByIdService
 async function getOrderByIdService(id) {
-  const order = await Order.find({ _id: id }).exec();
-  if (!order) throw OrderNotExistErr();
+  const order = await Order.findById(id).exec();
+  if (!order) throw new Error(`Order with id ${id} does not exist`);
   return order;
 }
 
@@ -51,4 +69,5 @@ export {
   createOrderService,
   getOrderByIdService,
   updateOrderService,
+  advancedOrdersSearchService,
 };

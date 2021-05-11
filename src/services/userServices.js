@@ -43,13 +43,13 @@ async function registerUserService(name, email, password) {
 // login logic
 async function loginUserService(email, password) {
   const { error } = loginValidation({ email, password });
-  if (error) return console.log(error);
+  if (error) throw new Error(error);
 
   const user = await User.findOne({ email: email });
-  if (!user) return console.log('Email is not found');
+  if (!user) throw new Error('login user not exist');
 
   const validPass = await validatePassword(password, user.password);
-  if (!validPass) return console.log('Password is wrong');
+  if (!validPass) throw new Error('password not right');
 
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);

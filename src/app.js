@@ -15,8 +15,9 @@ import orderItemRoute from './routes/orderItems.route.js';
 
 // database connection and product table population
 import mongoose from 'mongoose';
-import product from './productData.js';
+import { product, order } from './productData.js';
 import Product from './models/Product.js';
+import Order from './models/Order.js';
 mongoose.connect(config.databaseURL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -27,13 +28,20 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', async () => {
   console.log('Connected to db');
   await populateProducts(product);
+  await populateOrders(order);
 });
 
 async function populateProducts(products) {
   const productTable = await Product.find({});
   if (productTable.length > 0)
-    return console.log('Table already been populated');
+    return console.log('Product table already been populated');
   await Product.insertMany(products);
+}
+async function populateOrders(orders) {
+  const orderTable = await Order.find({});
+  if (orderTable.length > 0)
+    return console.log('Order table already been populated');
+  await Order.insertMany(orders);
 }
 
 app.use(express.json());

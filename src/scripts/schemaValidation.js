@@ -40,7 +40,15 @@ const cartCreationValidation = (data) => {
 const orderCreationValidation = (data) => {
   const schema = Joi.object({
     user_id: Joi.string().required(),
-    detail: Joi.array(),
+    items: Joi.array(),
+  });
+  return schema.validate(data);
+};
+
+const orderUpdateValidation = (data) => {
+  const schema = Joi.object({
+    user_id: Joi.string().required(),
+    newStatus: Joi.string().valid('Completed', 'Pending', 'Canceled'),
   });
   return schema.validate(data);
 };
@@ -60,4 +68,5 @@ export {
   cartCreationValidation,
   orderCreationValidation,
   orderItemCreationValidation,
+  orderUpdateValidation,
 };

@@ -27,6 +27,11 @@ const productSchema = new mongoose.Schema(
     },
     popularity: {
       type: Number,
+      default: 5,
+    },
+    imageUrl: {
+      type: [String],
+      default: ['https://i.ibb.co/GCCdy8t/womens.png'],
     },
   },
   { timestamps: true }

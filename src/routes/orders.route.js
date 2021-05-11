@@ -6,10 +6,11 @@ import {
   createOrderService,
   getOrderByIdService,
   updateOrderService,
+  advancedOrdersSearchService,
 } from '../services/orderServices.js';
 
 // get all orders
-router.get('/orders', async (req, res, next) => {
+router.get('/orders/all', async (req, res, next) => {
   try {
     const allOrders = await getAllOrdersService();
     res.json(allOrders);
@@ -20,10 +21,11 @@ router.get('/orders', async (req, res, next) => {
 
 // create an order
 router.post('/orders', async (req, res, next) => {
+  console.log(req.body.params);
   try {
     const newOrder = await createOrderService(
-      req.body.user_id,
-      req.body.detail
+      req.body.params.user_id,
+      req.body.params.items
     );
     res.json(newOrder);
   } catch (err) {
@@ -35,10 +37,23 @@ router.post('/orders', async (req, res, next) => {
 router.post('/orders/modify', async (req, res, next) => {
   try {
     const editedOrder = await updateOrderService(
-      req.body.order_id,
-      req.body.newData
+      req.body.params.order_id,
+      req.body.params.newData
     );
     res.json(editedOrder);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/orders/advanced', async (req, res, next) => {
+  let value = {
+    page: req.query.page,
+  };
+
+  try {
+    const filteredOrder = await advancedOrdersSearchService(value);
+    res.json(filteredOrder);
   } catch (err) {
     next(err);
   }

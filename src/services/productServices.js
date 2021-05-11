@@ -4,26 +4,43 @@ import { productCreationValidation } from '../scripts/schemaValidation.js';
 
 import { ProductExistedErr } from '../errors/ApiError.js';
 // service to add one product
-async function addProductServices(name, categories) {
+async function addProductServices({
+  name,
+  size,
+  color,
+  categories,
+  price,
+  stock,
+  brand,
+}) {
   // Create a new Product
   const product = new Product({
     name: name,
+    size: size,
+    color: color,
     categories: categories,
+    price: price,
+    stock: stock,
+    brand: brand,
   });
   try {
     var savedProduct = await product.save();
   } catch (err) {
-    throw new Error('Failed to create new product');
+    throw new Error(err.message);
   }
   return savedProduct;
 }
 
 // service to get all products available
-async function viewAllProductsServices() {
-  const allProducts = await Product.find({}).skip(15).limit(15);
+// take params of page, and limit for number of product each page
+async function viewAllProductsServices({ page, limit }) {
+  const allProducts = await Product.find({})
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .exec();
   const count = await Product.find({}).countDocuments();
   if (!allProducts) throw new Error('There is no product at the moment');
-  return { product: allProducts, maxPage: Math.ceil(count / 15) };
+  return { product: allProducts, maxPage: Math.ceil(count / limit) };
 }
 
 async function findProductByIdService(id) {
@@ -36,7 +53,7 @@ async function findProductByIdService(id) {
 async function editProductService(id, newData) {
   if (!newData) throw new Error('Nothing passed into service');
 
-  const product = await Product.findOne({ _id: id }).exec();
+  const product = await Product.findById(id).exec();
   if (!product) throw new Error('Product does not exist');
 
   const updatedProduct = await Product.findByIdAndUpdate(id, newData, {
@@ -48,7 +65,6 @@ async function editProductService(id, newData) {
 
 async function advancedProductSearchService({ categories, page, sort }) {
   const sortOption = await sortIdentifier(sort);
-
   const filteredProduct = await Product.find({
     categories: { $in: categories },
   })
@@ -74,10 +90,12 @@ async function sortIdentifier(sort = '') {
       return { name: 1 };
     case 'Z-A':
       return { name: -1 };
-    case 'highestprice':
+    case 'highestPrice':
       return { price: -1 };
-    case 'lowestprice':
+    case 'lowestPrice':
       return { price: 1 };
+    case 'Popularity':
+      return { popularity: 1 };
     default:
       return {};
   }
