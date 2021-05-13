@@ -16,8 +16,11 @@ export default {
    */
   port: parseInt(process.env.PORT, 10),
 
+  //
+  backendUrl: process.env.BACKEND_URL,
+
   /**
-   * That long string from mlab
+   * Database url
    */
   databaseURL: process.env.DATABASE_CLOUD_URL,
 

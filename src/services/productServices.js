@@ -3,7 +3,38 @@ import Product from '../models/Product.js';
 import { productCreationValidation } from '../scripts/schemaValidation.js';
 
 import { ProductExistedErr } from '../errors/ApiError.js';
+
 // service to add one product
+async function createProductService({
+  name,
+  size,
+  color,
+  categories,
+  price,
+  stock,
+  brand,
+  description,
+  imageUrl,
+}) {
+  // Create a new Product
+  const product = new Product({
+    name: name,
+    size: size,
+    color: color,
+    categories: categories,
+    price: price,
+    stock: stock,
+    brand: brand,
+    description: description,
+    imageUrl: imageUrl,
+  });
+  try {
+    var savedProduct = await product.save();
+  } catch (err) {
+    throw new Error(err.message);
+  }
+  return savedProduct;
+}
 async function addProductServices({
   name,
   size,
@@ -107,4 +138,5 @@ export {
   editProductService,
   advancedProductSearchService,
   findProductByIdService,
+  createProductService,
 };

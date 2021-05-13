@@ -7,6 +7,7 @@ import {
   editProductService,
   advancedProductSearchService,
   findProductByIdService,
+  createProductService,
 } from '../services/productServices.js';
 
 // retrieve all products in the database
@@ -24,6 +25,67 @@ router.get('/products/all', async (req, res) => {
 });
 
 // add one product
+// create product support with multer, path, uuid, fs
+import multer from 'multer';
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs';
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const filesDir = 'uploads/images';
+    // check if directory exists
+    if (!fs.existsSync(filesDir)) {
+      // if not create directory
+      fs.mkdirSync(filesDir);
+    }
+
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    //get file extension
+    const ext = path.extname(file.originalname);
+    //get random id
+    const id = uuidv4();
+    const filePath = `images/${id}${ext}`;
+
+    cb(null, filePath);
+  },
+});
+var upload = multer({ storage: storage });
+// req.files for access to arrays object of files
+// set filename (aka file path) as the image src in database
+router.post(
+  '/products/create',
+  upload.array('uploaded_image', 8),
+  async (req, res, next) => {
+    //req.body has all the other props, productImages holds the url array for image
+
+    //create a dummy array to use as input for model creation
+    const productImages = [];
+    //each filename is set as its path in BE server
+    req.files.forEach((file) => productImages.push(`${file.filename}`));
+    const values = {
+      categories: req.body.categories,
+      size: req.body.size,
+      color: req.body.color,
+      name: req.body.productName,
+      brand: req.body.brand,
+      price: req.body.price,
+      stock: req.body.quantity,
+      description: req.body.description,
+      imageUrl: productImages,
+    };
+    //do asyncchronos createProductService here
+    try {
+      const newProduct = await createProductService(values);
+      res.json(newProduct);
+    } catch (error) {
+      next(err);
+    }
+  }
+);
+
 router.post('/products', async (req, res, next) => {
   const value = {
     size: req.body.params.size,

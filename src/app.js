@@ -1,8 +1,10 @@
+// basic import
 import config from './config/index.js';
 import express from 'express';
-import { genericErrorHandler } from './errors/GenericErrorHandler.js';
 const app = express();
 
+// middlewares import
+import { genericErrorHandler } from './errors/GenericErrorHandler.js';
 import cors from 'cors';
 import morgan from 'morgan';
 
@@ -31,12 +33,14 @@ db.once('open', async () => {
   await populateOrders(order);
 });
 
+// populate product table with static data from productData.js
 async function populateProducts(products) {
   const productTable = await Product.find({});
   if (productTable.length > 0)
     return console.log('Product table already been populated');
   await Product.insertMany(products);
 }
+// popuate order table with static data from productData.js
 async function populateOrders(orders) {
   const orderTable = await Order.find({});
   if (orderTable.length > 0)
@@ -44,12 +48,14 @@ async function populateOrders(orders) {
   await Order.insertMany(orders);
 }
 
+// middleware usage
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(morgan('dev'));
+app.use(express.static('uploads'));
 
-// Route Middleware
+// Routes
 app.use('/api', userRoute);
 app.use('/api', productRoute);
 app.use('/api', cartRoute);
@@ -63,5 +69,3 @@ app.listen(config.port, () =>
 🛡️  Server listening on port: ${config.port} 🛡️
 ################################################`)
 );
-
-const productTable = [];

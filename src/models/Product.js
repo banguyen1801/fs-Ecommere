@@ -12,18 +12,23 @@ const productSchema = new mongoose.Schema(
     },
     size: {
       type: [String],
+      required: true,
     },
     price: {
       type: Number,
+      required: true,
     },
     color: {
       type: [String],
+      required: true,
     },
     stock: {
       type: Number,
+      required: true,
     },
     categories: {
       type: [String],
+      required: true,
     },
     popularity: {
       type: Number,
@@ -32,6 +37,10 @@ const productSchema = new mongoose.Schema(
     imageUrl: {
       type: [String],
       default: ['https://i.ibb.co/GCCdy8t/womens.png'],
+    },
+    description: {
+      type: String,
+      default: '',
     },
   },
   { timestamps: true }
