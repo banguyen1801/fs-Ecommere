@@ -1,6 +1,7 @@
 import express from 'express';
+import { badRequest } from '../errors/ApiError.js';
 const router = express.Router();
-import { verify } from '../middleware/verifyToken.js';
+import { verify, isUser, isAdmin } from '../middleware/verify.js';
 import User from '../models/User.js';
 
 import {
@@ -13,12 +14,14 @@ import {
 
 // Register
 router.post('/register', async (req, res, next) => {
+  const value = {
+    name: req.body.params.name,
+    email: req.body.params.email,
+    password: req.body.params.password,
+    role: req.body.params.role,
+  };
   try {
-    const savedUser = await registerUserService(
-      req.body.params.name,
-      req.body.params.email,
-      req.body.params.password
-    );
+    const savedUser = await registerUserService(value);
     res.json(savedUser);
   } catch (err) {
     next(err);
@@ -38,7 +41,7 @@ router.post('/login', async (req, res) => {
       user: user,
     });
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    throw badRequest();
   }
 });
 
@@ -53,7 +56,7 @@ router.get('/users', async (req, res) => {
 });
 
 // return full info of a user who already had a valid JWT token
-router.post('/users', verify, async (req, res) => {
+router.post('/users', isAdmin, async (req, res) => {
   const user = await User.findById({ _id: req.user._id });
   res.json(user);
 });

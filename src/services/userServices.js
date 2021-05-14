@@ -14,7 +14,7 @@ import { hashPassword, validatePassword } from '../scripts/hashHandler.js';
 import { UserExistedErr } from '../errors/ApiError.js';
 
 // register logic
-async function registerUserService(name, email, password) {
+async function registerUserService({ name, email, password, role = '' }) {
   const { error } = registerValidation({ name, email, password });
   if (error) throw new Error(error.details[0].message);
 
@@ -29,7 +29,7 @@ async function registerUserService(name, email, password) {
   const newUser = new User({
     name: name,
     email: email,
-    roles: [userRoleId._id],
+    roles: ['user', role],
     password: hashedPassword,
   });
 

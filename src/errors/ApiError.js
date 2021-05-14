@@ -1,6 +1,8 @@
-const badRequest = (res, msg) => {
-  res.status(400).json(msg);
-};
+const badRequest = () => ({
+  code: 'Bad Request',
+  status: 401,
+  message: `Something is wrong with this request`,
+});
 
 const internal = (res, msg) => {
   res.status(500).json(msg);

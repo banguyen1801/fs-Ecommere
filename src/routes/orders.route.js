@@ -9,8 +9,10 @@ import {
   advancedOrdersSearchService,
 } from '../services/orderServices.js';
 
+import { isUser, isAdmin } from '../middleware/verify.js';
+
 // get all orders
-router.get('/orders/all', async (req, res, next) => {
+router.get('/orders/all', isAdmin, async (req, res, next) => {
   try {
     const allOrders = await getAllOrdersService();
     res.json(allOrders);
@@ -20,7 +22,7 @@ router.get('/orders/all', async (req, res, next) => {
 });
 
 // create an order
-router.post('/orders', async (req, res, next) => {
+router.post('/orders', isUser, async (req, res, next) => {
   console.log(req.body.params);
   try {
     const newOrder = await createOrderService(
@@ -34,7 +36,7 @@ router.post('/orders', async (req, res, next) => {
 });
 
 // update an order
-router.post('/orders/modify', async (req, res, next) => {
+router.post('/orders/modify', isAdmin, async (req, res, next) => {
   try {
     const editedOrder = await updateOrderService(
       req.body.params.order_id,
@@ -46,7 +48,7 @@ router.post('/orders/modify', async (req, res, next) => {
   }
 });
 
-router.get('/orders/advanced', async (req, res, next) => {
+router.get('/orders/advanced', isAdmin, async (req, res, next) => {
   let value = {
     page: req.query.page,
   };
@@ -60,7 +62,7 @@ router.get('/orders/advanced', async (req, res, next) => {
 });
 
 // get order by _id
-router.get('/orders/:id', async (req, res, next) => {
+router.get('/orders/:id', isAdmin, async (req, res, next) => {
   try {
     const order = await getOrderByIdService(req.params.id);
     res.json(order);

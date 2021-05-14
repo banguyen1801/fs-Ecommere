@@ -1,6 +1,5 @@
 import { badRequest } from '../errors/ApiError.js';
-import UserClass from '../models/User.js';
-import RoleClass from '../models/Roles.js';
+import Role from '../models/Roles.js';
 async function checkUserExist(req, res, next) {
   const email = req.body.email;
   const result = UserClass.findUserByEmail(email);
@@ -15,4 +14,4 @@ async function isUserAdmin(req, res, next) {
   else return badRequest(res, 'user is not admin');
 }
 
-export { checkUserExist };
+export { checkUserExist, isUserAdmin };

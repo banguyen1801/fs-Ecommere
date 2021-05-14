@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
+import { getUserRoleId } from '../services/roleServices.js';
+
 const userSchema = new Schema({
   name: {
     type: String,
@@ -15,7 +17,8 @@ const userSchema = new Schema({
     required: true,
   },
   roles: {
-    type: [{ type: Schema.Types.ObjectId, ref: 'Role' }],
+    type: [String],
+    default: ['user'],
   },
   date: {
     type: Date,

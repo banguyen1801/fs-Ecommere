@@ -2,7 +2,7 @@ import Product from '../models/Product.js';
 
 import { productCreationValidation } from '../scripts/schemaValidation.js';
 
-import { ProductExistedErr } from '../errors/ApiError.js';
+import { ProductExistedErr, badRequest } from '../errors/ApiError.js';
 
 // service to add one product
 async function createProductService({
@@ -62,9 +62,15 @@ async function addProductServices({
   return savedProduct;
 }
 
+async function fetchInitialProductsService() {
+  const allProducts = await Product.find({}).limit(15).exec();
+  if (!allProducts) throw badRequest();
+  return { product: allProducts, maxPage: 1 };
+}
+
 // service to get all products available
 // take params of page, and limit for number of product each page
-async function viewAllProductsServices({ page, limit }) {
+async function fetchAllProductsServices({ page, limit }) {
   const allProducts = await Product.find({})
     .skip((page - 1) * limit)
     .limit(limit)
@@ -146,6 +152,7 @@ export {
   createProductService,
   editProductService,
   findProductByIdService,
-  viewAllProductsServices,
+  fetchAllProductsServices,
   removeProductService,
+  fetchInitialProductsService,
 };
