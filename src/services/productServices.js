@@ -94,6 +94,14 @@ async function editProductService(id, newData) {
   return updatedProduct;
 }
 
+//remove one product and return removed product
+async function removeProductService({ _id }) {
+  console.log('service layer', _id);
+  const removedProduct = await Product.findOneAndRemove({ _id: _id });
+  return removedProduct;
+}
+
+// search for products but have many param for filtering result
 async function advancedProductSearchService({ categories, page, sort }) {
   const sortOption = await sortIdentifier(sort);
   const filteredProduct = await Product.find({
@@ -134,9 +142,10 @@ async function sortIdentifier(sort = '') {
 
 export {
   addProductServices,
-  viewAllProductsServices,
-  editProductService,
   advancedProductSearchService,
-  findProductByIdService,
   createProductService,
+  editProductService,
+  findProductByIdService,
+  viewAllProductsServices,
+  removeProductService,
 };

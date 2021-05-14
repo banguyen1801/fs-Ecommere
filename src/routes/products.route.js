@@ -3,11 +3,12 @@ const router = express.Router();
 
 import {
   addProductServices,
-  viewAllProductsServices,
-  editProductService,
   advancedProductSearchService,
-  findProductByIdService,
   createProductService,
+  editProductService,
+  findProductByIdService,
+  viewAllProductsServices,
+  removeProductService,
 } from '../services/productServices.js';
 
 // retrieve all products in the database
@@ -108,8 +109,8 @@ router.post('/products', async (req, res, next) => {
 router.post('/products/modify', async (req, res, next) => {
   try {
     const editedProduct = await editProductService(
-      req.body.params.id,
-      req.body.params.newData
+      req.body.id,
+      req.body.newData
     );
     res.json(editedProduct);
   } catch (err) {
@@ -117,9 +118,19 @@ router.post('/products/modify', async (req, res, next) => {
   }
 });
 
-// get product with filtered categories
-// filter with product_type
+//remove one product
+router.post('/products/remove', async (req, res, next) => {
+  console.log(req.body);
 
+  try {
+    const removedProduct = await removeProductService(req.body);
+    res.json(removedProduct);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// get product with filtered categories
 // filter with product_type and collection
 // TODO: https://www.sitepoint.com/get-url-parameters-with-javascript/#:~:text=URL%20parameters%20%28also%20called%20query%20string%20parameters%20or,link%20referrals%2C%20product%20information%2C%20user%20preferences%2C%20and%20more.
 router.get('/products/advanced', async (req, res, next) => {

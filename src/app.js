@@ -1,5 +1,6 @@
 // basic import
-import config from './config/index.js';
+import dotenv from 'dotenv';
+dotenv.config();
 import express from 'express';
 const app = express();
 
@@ -17,10 +18,10 @@ import orderItemRoute from './routes/orderItems.route.js';
 
 // database connection and product table population
 import mongoose from 'mongoose';
-import { product, order } from './productData.js';
+import { order, productWithLocalImages } from './productData.js';
 import Product from './models/Product.js';
 import Order from './models/Order.js';
-mongoose.connect(config.databaseURL, {
+mongoose.connect(process.env.DATABASE_CLOUD_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
@@ -29,7 +30,7 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', async () => {
   console.log('Connected to db');
-  await populateProducts(product);
+  await populateProducts(productWithLocalImages);
   await populateOrders(order);
 });
 
@@ -64,8 +65,8 @@ app.use('/api', orderItemRoute);
 
 app.use(genericErrorHandler);
 
-app.listen(config.port, () =>
+app.listen(process.env.PORT, () =>
   console.log(`################################################
-🛡️  Server listening on port: ${config.port} 🛡️
+🛡️  Server listening on port: ${process.env.PORT} 🛡️
 ################################################`)
 );
