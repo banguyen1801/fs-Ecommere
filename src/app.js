@@ -1,6 +1,6 @@
 // basic import
-import dotenv from 'dotenv';
-dotenv.config();
+import './config/index.js';
+
 import express from 'express';
 const app = express();
 
@@ -15,22 +15,29 @@ import productRoute from './routes/products.route.js';
 import cartRoute from './routes/carts.route.js';
 import orderRoute from './routes/orders.route.js';
 import orderItemRoute from './routes/orderItems.route.js';
+import awsRoute from './routes/awsUploadRoute.js';
 
 // database connection and product table population
 import mongoose from 'mongoose';
-import { order, productWithLocalImages } from './productData.js';
+import {
+  order,
+  productWithLocalImages,
+  productWithAWSImages,
+} from './productData.js';
 import Product from './models/Product.js';
 import Order from './models/Order.js';
+
 mongoose.connect(process.env.DATABASE_CLOUD_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
 });
+
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', async () => {
   console.log('Connected to db');
-  await populateProducts(productWithLocalImages);
+  await populateProducts(productWithAWSImages);
   await populateOrders(order);
 });
 
@@ -62,6 +69,7 @@ app.use('/api', productRoute);
 app.use('/api', cartRoute);
 app.use('/api', orderRoute);
 app.use('/api', orderItemRoute);
+app.use('/api', awsRoute);
 
 app.use(genericErrorHandler);
 

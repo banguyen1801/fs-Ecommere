@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { badRequest } from '../errors/ApiError.js';
 
 //take a user return a new JWT Token signed by user _id
 export const generateAccessToken = (user) => {

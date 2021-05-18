@@ -3,6 +3,8 @@ const router = express.Router();
 
 import { isUser, isAdmin } from '../middleware/verify.js';
 
+import upload from '../services/awsUploadServices.js';
+
 import {
   addProductServices,
   advancedProductSearchService,
@@ -29,7 +31,7 @@ router.get('/products/all', isAdmin, async (req, res, next) => {
 });
 
 // retrieve 15 products for initial shop load
-router.get('/products/initial', isUser, async (req, res, next) => {
+router.get('/products/initial', async (req, res, next) => {
   try {
     const initialProducts = await fetchInitialProductsService();
     res.json(initialProducts);
@@ -39,36 +41,7 @@ router.get('/products/initial', isUser, async (req, res, next) => {
 });
 
 // add one product
-// create product support with multer, path, uuid, fs
-import multer from 'multer';
-import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
-import fs from 'fs';
 
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const filesDir = 'uploads/images';
-    // check if directory exists
-    if (!fs.existsSync(filesDir)) {
-      // if not create directory
-      fs.mkdirSync(filesDir);
-    }
-
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    //get file extension
-    const ext = path.extname(file.originalname);
-    //get random id
-    const id = uuidv4();
-    const filePath = `images/${id}${ext}`;
-
-    cb(null, filePath);
-  },
-});
-var upload = multer({ storage: storage });
-// req.files for access to arrays object of files
-// set filename (aka file path) as the image src in database
 router.post(
   '/products/create',
   isAdmin,
@@ -78,8 +51,8 @@ router.post(
 
     //create a dummy array to use as input for model creation
     const productImages = [];
-    //each filename is set as its path in BE server
-    req.files.forEach((file) => productImages.push(`${file.filename}`));
+    //each filename is set as its url on aws S3 server
+    req.files.forEach((file) => productImages.push(`${file.location}`));
     const values = {
       categories: req.body.categories,
       size: req.body.size,
