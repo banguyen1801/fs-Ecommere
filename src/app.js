@@ -68,7 +68,7 @@ app.use(express.static('uploads'));
 app.use('/api', userRoute);
 app.use('/api', productRoute);
 app.use('/api', cartRoute);
-app.use('/api', orderItemRoute);
+app.use('/api', orderRoute);
 app.use('/api', awsRoute);
 
 app.use(genericErrorHandler);
