@@ -27,12 +27,15 @@ import mongoose from 'mongoose';
 // } from './productData.js';
 import Product from './models/Product.js';
 import Order from './models/Order.js';
-
-mongoose.connect(process.env.DATABASE_CLOUD_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-});
+console.log(process.env.DATABASE_CLOUD_URL);
+mongoose.connect(
+  'mongodb+srv://admin:admin@cluster0.azk85.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+  }
+);
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
