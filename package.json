@@ -5,12 +5,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "devStart": "nodemon ./src/app.js"
+    "prodStart": "pm2 start src/app.js",
+    "prodStop": "pm2 stop app",
+    "start": "nodemon src/app.js",
+    "dev": "parcel src/app.js",
+    "build": "parcel build src/app.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.7",
+    "parcel-bundler": "^1.12.5"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",

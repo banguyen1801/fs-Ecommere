@@ -19,11 +19,12 @@ import awsRoute from './routes/awsUploadRoute.js';
 
 // database connection and product table population
 import mongoose from 'mongoose';
-import {
-  order,
-  productWithLocalImages,
-  productWithAWSImages,
-} from './productData.js';
+
+// import {
+//   order,
+//   productWithLocalImages,
+//   productWithAWSImages,
+// } from './productData.js';
 import Product from './models/Product.js';
 import Order from './models/Order.js';
 
@@ -37,8 +38,8 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', async () => {
   console.log('Connected to db');
-  await populateProducts(productWithAWSImages);
-  await populateOrders(order);
+  // await populateProducts(productWithAWSImages);
+  // await populateOrders(order);
 });
 
 // populate product table with static data from productData.js
@@ -67,14 +68,15 @@ app.use(express.static('uploads'));
 app.use('/api', userRoute);
 app.use('/api', productRoute);
 app.use('/api', cartRoute);
-app.use('/api', orderRoute);
 app.use('/api', orderItemRoute);
 app.use('/api', awsRoute);
 
 app.use(genericErrorHandler);
 
-app.listen(process.env.PORT || 5000, () =>
+const port = process.env.PORT || 5000;
+
+app.listen(port, () =>
   console.log(`################################################
-🛡️  Server listening on port: ${process.env.PORT} 🛡️
+🛡️  Server listening on port: ${port} 🛡️
 ################################################`)
 );
