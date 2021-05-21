@@ -21,9 +21,6 @@ async function registerUserService({ name, email, password, role = '' }) {
   // Hash password with bcryptjs
   const hashedPassword = await hashPassword(password);
 
-  const userRoleId = await Role.findOne({ name: 'user' }).exec();
-  if (!userRoleId) throw new Error("'user' role haven't been created yet");
-
   const user = await User.findOne({ email: email }).exec();
   if (user) throw UserExistedErr();
   const newUser = new User({

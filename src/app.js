@@ -28,7 +28,7 @@ import mongoose from 'mongoose';
 import Product from './models/Product.js';
 import Order from './models/Order.js';
 
-mongoose.connect(process.env.DATABASE_CLOUD_URL, {
+mongoose.connect(process.env.DATABASE_CLOUD_URL2, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
