@@ -6,13 +6,14 @@
 
 ## General info
 This project is the Backend code for fs-ecommere-client repository
+* Website online at http://ec2-52-14-29-94.us-east-2.compute.amazonaws.com/
 	
 ## Technologies
 Project is created with:
 * NodeJS
-* ReactJS
 * MongoDB(mongoosejs)
 * Express
+* AWS (EC2, S3)
 
 ## Setup
 To run this project, install it locally using npm:
